@@ -1,6 +1,6 @@
 (ns ayler.webapp
   "The webapp"
-  (:require [net.cgrand.enlive-html :as html]
+  (:require [ring.util.response :refer (resource-response)]
             [compojure.route :as route]
             [compojure.handler :as handler])
   (:use [compojure.core :only (defroutes GET)]))
@@ -10,11 +10,8 @@
   [col]
   (apply str col))
 
-(html/deftemplate layout "templates/index.html"
-  [])
-
 (defroutes app-routes
-  (GET "/" [] (layout))
+  (GET "/" _ (resource-response "/public/index.html"))
   (route/resources "/")
   (route/not-found "NOT FOUND"))
 

@@ -7,7 +7,6 @@
                  [org.clojure/tools.nrepl "0.2.2"]
                  [ring/ring-core "1.1.8"]
                  [ring/ring-jetty-adapter "1.1.8"]
-                 [enlive "1.1.1"]
                  [compojure "1.1.5"
                   :exclusions [org.clojure/tools.macro]]
                  [com.taoensso/timbre "1.5.2"]
