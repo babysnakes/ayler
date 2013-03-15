@@ -14,7 +14,8 @@
 
   :profiles {:dev
              {:dependencies [[ring-mock "0.1.3"]]
-              :plugins [[lein-pedantic "0.0.5"]]}}
+              :plugins [[lein-pedantic "0.0.5"]]
+              :jvm-opts ["-Dayler.dev=t"]}}
 
   :main ayler.app
   :pedantic :warn
