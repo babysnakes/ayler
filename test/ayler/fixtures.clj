@@ -55,3 +55,13 @@
 (def disconnected-response {:status :disconnected})
 
 (def not-connected-response {:status :not-connected})
+
+(def require-error-response
+  '{:err "FileNotFoundException Could not locate a/b/c__init.class or a/b/c.clj on classpath:   clojure.lang.RT.load (RT.java:432)\n",
+    :status :error,
+    :root-ex "class java.io.FileNotFoundException",
+    :ex "class java.io.FileNotFoundException"})
+
+(def require-error-query-parsed
+  '{:status :error
+    :response "FileNotFoundException Could not locate a/b/c__init.class or a/b/c.clj on classpath:   clojure.lang.RT.load (RT.java:432)\n"})
