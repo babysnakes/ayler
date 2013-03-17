@@ -13,3 +13,4 @@ pom.xml
 /tmp/
 /resources/public/js/app.js
 /resources/public/css/app.css
+/.emacs.desktop*
