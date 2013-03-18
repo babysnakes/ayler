@@ -26,6 +26,12 @@ module.exports = (grunt) =>
           ]
         dest: "resources/public/js/dependencies.js"
 
+    clean:
+      [
+        "resources/public/js/*.js",
+        "resources/public/css/*.css"
+      ]
+
     watch:
       css:
         files:
@@ -48,5 +54,8 @@ module.exports = (grunt) =>
   grunt.loadNpmTasks('grunt-contrib-concat')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-less')
-  grunt.registerTask('default', ['less:development', 'concat:development', 'watch'])
-  grunt.registerTask('production', ['less:development', 'concat:production'])
+  grunt.loadNpmTasks('grunt-contrib-clean')
+  grunt.registerTask('default',
+    ['clean', 'less:development', 'concat:development', 'watch'])
+  grunt.registerTask('production',
+    ['clean', 'less:development', 'concat:production'])
