@@ -1,9 +1,10 @@
 {
-    "name": "ayler",
-    "version": "0.0.0",
-    "description": "Utilities to help during the development of ayler",
-    "dependencies": {
-        "forewoman": "~0.3.0",
-        "collate": "0.0.6"
-    }
+  "name": "ayler",
+  "version": "0.0.0",
+  "description": "Utilities to help during the development of ayler",
+  "dependencies": {
+    "forewoman": "~0.3.0",
+    "collate": "0.0.6",
+    "bower": "~0.8.5"
+  }
 }
