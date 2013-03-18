@@ -11,6 +11,6 @@ pom.xml
 /node_Modules/
 /Procfile
 /tmp/
-/resources/public/js/app.js
+/resources/public/js/*.js
 /resources/public/css/app.css
 /.emacs.desktop*

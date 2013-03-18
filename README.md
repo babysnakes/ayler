@@ -6,18 +6,25 @@ repl.
 ## Development environment setup
 
 ### Asset management
-We use node.js to generate our assets on the fly (0.8.x). Install
-[node.js][node] (which should also install npm) and run (from the root
-of the repository):
+This project uses [node.js][node] based tools to manage assets (plus other
+stuff). You have to install it (currently we use version 0.8.x) and
+then run the following (from the root of the repository):
 
-    # npm install
+* Install required node packages (make take some time):
+  * `npm install`
+* Configure your path to use the installed tools:
+  * `export PATH=${PWD}/node_modules/.bin:$PATH`
+* Install required js/css dependencies (may take some time):
+  * `bower install`
 
-This will install all required packages. Now copy
-`config/Procfile.sample` to `Procfile` and run:
+Now, we use the `grunt` command to generate our assets. Here's a list
+of most common invocations:
 
-    # node_modules/.bin/forewoman start
-
-This should generate the javascript and css files on every change.
+* To generate required assets on every change (leave this running
+  during all development sessions):
+  * `grunt`
+* To generate assets for production
+  * `grunt production`
 
 ## License
 
