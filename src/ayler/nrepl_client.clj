@@ -29,6 +29,7 @@
   (if (empty? @_remote)
     {:status :not-connected}
     (try
+      (timbre/debug (str "Evaluating on remote nrepl: " code))
       (with-open [conn (apply repl/connect @_remote)]
         (-> (repl/client conn 1000)
             (repl/message {:op op :code code})
@@ -56,7 +57,7 @@
   "Composes parse-response with eval-on-remote-nrepl."
   (comp parse-response eval-on-remote-nrepl))
 
-(defmacro evaluate-remote
+(defmacro evaluate
   "Converts the supplied forms to strings and runs 'execute' on them."
   [code]
   `(execute :eval ~(pr-str code)))
