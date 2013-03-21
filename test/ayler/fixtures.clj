@@ -62,6 +62,9 @@
     :root-ex "class java.io.FileNotFoundException",
     :ex "class java.io.FileNotFoundException"})
 
+(def successfull-evaluation-value-response
+  '{:status :done, :value [3], :ns "user"})
+
 (def require-error-query-parsed
   '{:status :error
     :response "FileNotFoundException Could not locate a/b/c__init.class or a/b/c.clj on classpath:   clojure.lang.RT.load (RT.java:432)\n"})

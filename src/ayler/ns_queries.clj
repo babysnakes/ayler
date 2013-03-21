@@ -1,6 +1,14 @@
 (ns ayler.ns-queries
   "All the queries needed to be performed and parsed remotely in this
-  application."
+  application.
+
+  All public functions in this namespace returns a hash with the
+  following keys:
+  * :status - indicates the status of the response (:done, :error,
+              :not-connected, :disconnected)
+  * :response - In case of :done status this is the required response.
+                In case of :error status this is the error message.
+                Otherwise nil."
   (:require ayler.test-helpers
             [ayler.nrepl-client :as client]
             [taoensso.timbre :as timbre]))
@@ -16,9 +24,9 @@
     :error (do
              (timbre/warn (str "Parsing error response: " (:err response)))
              {:status :error :response (:err response)})
-    :done (handler response)))
+    :done {:status :done :response (handler response)}))
 
-(def ^:private loaded-namespaces-handler
+(def ^:private value-response-handler
   #(first (:value %)))
 
 (defmacro ^:private compose-response
@@ -30,4 +38,4 @@
 (defn query-loaded-namespaces
   "Return a list of symbols of loaded namespaces."
   []
-  (compose-response (map ns-name (all-ns)) loaded-namespaces-handler))
+  (compose-response (map ns-name (all-ns)) value-response-handler))
