@@ -57,7 +57,7 @@
   "Composes parse-response with eval-on-remote-nrepl."
   (comp parse-response eval-on-remote-nrepl))
 
-(defmacro evaluate
-  "Converts the supplied forms to strings and runs 'execute' on them."
+(defn evaluate
+  "Exceutes the provided form (as pr-str output) in an :eval op."
   [code]
-  `(execute :eval ~(pr-str code)))
+  (execute :eval code))

@@ -33,33 +33,37 @@
 (def ^:private publics-response-handler
   (comp keys value-response-handler))
 
-(defmacro ^:private compose-response
+(defn- compose-response
   "Compose a response from the supplied query and handler"
   [query handler]
-  `(-> (client/evaluate ~query)
-       (generic-response-parser ~handler)))
+  (-> (client/evaluate query)
+      (generic-response-parser handler)))
 
 (defn query-loaded-namespaces
   "Return a list of symbols of loaded namespaces."
   []
-  (compose-response (map ns-name (all-ns)) value-response-handler))
+  (compose-response (pr-str '(map ns-name (all-ns))) value-response-handler))
 
-(defmacro query-namespace-docstring
+(defn query-namespace-docstring
   "returns docstring for requested namespace (specify namespace as string)"
   [ns]
-  `(compose-response (:doc (meta (find-ns (symbol ~ns)))) value-response-handler))
+  (compose-response (pr-str `(:doc (meta (find-ns (symbol ~ns)))))
+                    value-response-handler))
 
-(defmacro query-docstring
+(defn query-docstring
   "returns docstring for requested var (specify var as string)"
   [var]
-  `(compose-response (:doc (meta (find-var (symbol ~var)))) value-response-handler))
+  (compose-response (pr-str `(:doc (meta (find-var (symbol ~var)))))
+                    value-response-handler))
 
-(defmacro query-source
+(defn query-source
   "returns the source for the requested function (specify var as string)"
   [f]
-  `(compose-response (clojure.repl/source-fn (symbol ~f)) value-response-handler))
+  (compose-response (pr-str `(clojure.repl/source-fn (symbol ~f)))
+                    value-response-handler))
 
-(defmacro query-namespace-publics
+(defn query-namespace-publics
   "returns the public variables of the supplied namespace"
   [ns]
-  `(compose-response (ns-publics (symbol ~ns)) publics-response-handler))
+  (compose-response (pr-str `(ns-publics (symbol ~ns)))
+                    publics-response-handler))
