@@ -10,7 +10,8 @@
                  [compojure "1.1.5"
                   :exclusions [org.clojure/tools.macro]]
                  [com.taoensso/timbre "1.5.2"]
-                 [org.clojure/tools.cli "0.2.2"]]
+                 [org.clojure/tools.cli "0.2.2"]
+                 [ring/ring-json "0.2.0"]]
 
   :profiles {:dev
              {:dependencies [[ring-mock "0.1.3"]]
