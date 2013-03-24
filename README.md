@@ -6,9 +6,14 @@ repl.
 ## Development environment setup
 
 ### Asset management
-This project uses [node.js][node] based tools to manage assets (plus other
-stuff). You have to install it (currently we use version 0.8.x) and
-then run the following (from the root of the repository):
+
+This project uses various dependencies to manage it's assets. Make
+sure you have these installed:
+
+* [Nodejs][node] (currently 0.8.x)
+* [phantomjs][pjs] (currently 1.8.x)
+
+Once you have these installed run the following:
 
 * Install required node packages (make take some time):
   * `npm install`
@@ -25,6 +30,11 @@ of most common invocations:
   * `grunt`
 * To generate assets for production
   * `grunt production`
+* To run the karma (testacular) server. This is required before
+  running any of the test (either directly or via the `grunt [watch]`
+  invocation). Note that you may need to setup the `PHANTOMJS\_BIN`
+  environment variable to point to your phantomjs executable.
+  * `grunt karma:unit`
 
 ## License
 
@@ -33,3 +43,4 @@ Copyright © 2013 Haim Ashkenazi
 Distributed under the GPLv3 license.
 
 [node]: http://nodejs.org
+[pjs]: http://phantomjs.org

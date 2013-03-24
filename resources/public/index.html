@@ -2,6 +2,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="/css/app.css" type="text/css" />
+    <script src="/js/dependencies.js"></script>
+    <script src="/js/app.js"></script>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
@@ -67,20 +69,29 @@
         </ul>
       </div>
       <h2><small>Namespace / Var</small></h2>
-      <h3><small>Docstring</small></h3>
-      <pre id="docstring">
-        This is a demo docstring which will be replaced by javascript
-        with the real docstring!
-      </pre>
-      <h3><small>Source</small></h3>
-      <div class="highlighter">
-        <pre id="source">
-          (this will later
-            (be replaced with)
-            (real code (with highlight)))
-        </pre>
+      <div class="tabbable">
+        <ul class="nav nav-tabs">
+          <li><a href="#docstring" data-toggle="tab" class="active">Docstring</a></li>
+          <li><a href="#sourcestring" data-toggle="tab">Source</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="docstring">
+            <pre id="docstring">
+              This is a demo docstring which will be replaced by javascript
+              with the real docstring!
+            </pre>
+          </div>
+          <div class="tab-pane" id="sourcestring">
+            <div class="highlighter">
+              <pre id="source">
+                (this will later
+                (be replaced with)
+                (real code (with highlight)))
+              </pre>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
-  <script src="/js/dependencies.js"></script>
 </html>
