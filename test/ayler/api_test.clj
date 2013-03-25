@@ -2,14 +2,24 @@
   (:require [ayler.api :as api])
   (:use clojure.test))
 
-(deftest converting-to-name-and-url
+(deftest nses-to-name-and-url
   (testing "when input is nil"
-    (is (= (#'api/convert-to-name-and-url nil) '())))
+    (is (= (#'api/nses-to-name-and-url nil) '())))
   (testing "escaping urls"
-    (let [result (#'api/convert-to-name-and-url '(hello world!))]
+    (let [result (#'api/nses-to-name-and-url '(hello world!))]
       (is (= (:url (second result)) "world%21"))))
   (testing "sorting namespaces"
-    (let [result (#'api/convert-to-name-and-url '(world hello))]
+    (let [result (#'api/nses-to-name-and-url '(world hello))]
+      (is (= (:name (first result)) "hello")))))
+
+(deftest vars-to-name-and-url
+  (testing "when input is nil"
+    (is (= (#'api/vars-to-name-and-url nil nil) '())))
+  (testing "escaping urls"
+    (let [result (#'api/vars-to-name-and-url "ns" '(hello world!))]
+      (is (= (:url (second result)) "ns/world%21"))))
+  (testing "sorting namespaces"
+    (let [result (#'api/vars-to-name-and-url "ns" '(world hello))]
       (is (= (:name (first result)) "hello")))))
 
 (deftest only-applying-parser-to-successfull-results

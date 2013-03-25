@@ -34,7 +34,7 @@
           <div class="filter">
             <form class="form-search">
               <input type="text" class="input-medium search-query"
-                     placeholder="Filter namespace" ng-model="nses"/>
+                     placeholder="Filter namespaces" ng-model="nses"/>
             </form>
           </div>
         </div>
@@ -42,7 +42,7 @@
           <div class="filter">
             <form class="form-search">
               <input type="text" class="input-medium search-query"
-                     placeholder="Filter vars"/>
+                     placeholder="Filter vars" ng-model="vrs"/>
             </form>
           </div>
         </div>
@@ -56,46 +56,12 @@
       </div>
       <div class="container span6 list-window">
         <ul>
-          <li>var 1</li>
-          <li>var 2</li>
-          <li>var 3</li>
-          <li>var 4</li>
-          <li>var 5</li>
-          <li>var 6</li>
-          <li>var 7</li>
-          <li>var 8</li>
-          <li>var 9</li>
-          <li>var 10</li>
-          <li>var 11</li>
-          <li>var 12</li>
-          <li>var 13</li>
-          <li>var 14</li>
+          <li ng-repeat="var in vars | filter:vrs">
+            <a ng-href="#/{{var.url}}">{{var.name}}</a>
+          </li>
         </ul>
       </div>
-      <h2><small>Namespace / Var</small></h2>
-      <div class="tabbable">
-        <ul class="nav nav-tabs">
-          <li><a href="#docstring" data-toggle="tab" class="active">Docstring</a></li>
-          <li><a href="#sourcestring" data-toggle="tab">Source</a></li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active" id="docstring">
-            <pre id="docstring">
-              This is a demo docstring which will be replaced by javascript
-              with the real docstring!
-            </pre>
-          </div>
-          <div class="tab-pane" id="sourcestring">
-            <div class="highlighter">
-              <pre id="source">
-                (this will later
-                (be replaced with)
-                (real code (with highlight)))
-              </pre>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div ng-view></div>
     </div>
   </body>
 </html>
