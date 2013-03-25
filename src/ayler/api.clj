@@ -11,7 +11,9 @@
   "converts the list to a map with :name and encoded :url"
   [col]
   (timbre/trace (str "converting to name and url: " col))
-  (map (fn [x] {:name (name x) :url (url-encode (name x))}) col))
+  (->> col
+       sort
+       (map (fn [x] {:name (name x) :url (url-encode (name x))}))))
 
 (defn- apply-handler-if-successfull
   "If the provided response was successfull it applies the provided

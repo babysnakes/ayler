@@ -7,7 +7,10 @@
     (is (= (#'api/convert-to-name-and-url nil) '())))
   (testing "escaping urls"
     (let [result (#'api/convert-to-name-and-url '(hello world!))]
-      (is (= (:url (second result)) "world%21")))))
+      (is (= (:url (second result)) "world%21"))))
+  (testing "sorting namespaces"
+    (let [result (#'api/convert-to-name-and-url '(world hello))]
+      (is (= (:name (first result)) "hello")))))
 
 (deftest only-applying-parser-to-successfull-results
   (testing "un-successfull result"

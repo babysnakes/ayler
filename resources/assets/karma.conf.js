@@ -8,7 +8,9 @@ basePath = '../';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
+  "vendor/jquery/jquery.js",
   "vendor/angular/angular.js",
+  "vendor/bootstrap/docs/assets/js/bootstrap.js",
   "vendor/angular-*/*.js",
   'assets/js/*.js',
   'assets/test/unit/*.js'
