@@ -62,6 +62,10 @@ angular.module('ayler', [])
       $scope.vars = response;
     };
 
+    $scope.resetVarsFilter = function() {
+      $scope.vrs = "";
+    };
+
     $scope.loadNamespaces = function() {
       $scope.nsLoading = true;
       $http.get("/api/ls")
@@ -124,5 +128,6 @@ angular.module('ayler', [])
     $scope.nsName = $routeParams.namespace;
     $scope.updateVars();
     $scope.loadDocstring();
+    $scope.resetVarsFilter();
     $scope.setTitle($scope.nsName);
   });
