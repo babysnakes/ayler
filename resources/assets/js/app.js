@@ -12,6 +12,10 @@ angular.module('ayler', [])
       .when("/:namespace", {
         controller: NamespaceCtrl,
         templateUrl: "templates/ns-docstring.html"
+      })
+      .when("/:namespace/:var", {
+        controller: VarInfoCtrl,
+        templateUrl: "templates/var.html"
       });
   }]);
 
@@ -133,4 +137,52 @@ function NamespaceCtrl($scope, $routeParams, $http) {
   $scope.loadDocstring();
   $scope.resetVarsFilter();
   $scope.setTitle($scope.nsName);
+};
+
+function VarInfoCtrl($scope, $routeParams, $http) {
+  $scope.handleVarDoc = function(response) {
+    $scope.docstring = response || "No Docs.";
+  };
+
+  $scope.handleSource = function(response) {
+    $scope.source = response || "Source not found.";
+  };
+
+  $scope.refreshVars = function() {
+    if ($scope.vars.length === 0) {
+      $scope.loadVars($scope.nsName);
+    };
+  };
+
+  $scope.loadDocstring = function() {
+    $scope.docLoading = true;
+    $http.get("/api/doc/" + $scope.nsName + "/" + $scope.varName)
+      .success(function(data) {
+        $scope.docLoading = false;
+        $scope.handleResponse(data, $scope.handleVarDoc);
+      })
+      .error(function(data, status, header, config) {
+        $scope.docLoading = false;
+        errorHandler(data, status);
+      });
+  };
+
+  $scope.loadSource = function() {
+    $scope.sourceLoading = true;
+    $http.get("/api/source/" + $scope.nsName + "/" + $scope.varName)
+      .success(function(data) {
+        $scope.sourceLoading = false;
+        $scope.handleResponse(data, $scope.handleSource);
+      })
+      .error(function(data, status, header, config) {
+        $scope.sourceLoading = false;
+        errorHandler(data, status);
+      });
+  };
+
+  $scope.nsName = $routeParams.namespace;
+  $scope.varName = $routeParams.var
+  $scope.loadDocstring();
+  $scope.loadSource();
+  $scope.refreshVars();
 };
