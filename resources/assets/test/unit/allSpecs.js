@@ -1,15 +1,11 @@
 describe("Application: Ayler", function() {
   describe("Controller: MainCtrl", function() {
-    beforeEach(module("ayler"));
+    var ctrl, scope;
 
-    var MainCtrl, scope;
-
-    beforeEach(inject(function ($controller) {
+    beforeEach(function() {
       scope = {};
-      MainCtrl = $controller("MainCtrl", {
-        $scope: scope
-      });
-    }));
+      ctrl = new MainCtrl(scope);
+    });
 
     it("starts with empty title", function() {
       expect(scope.title).toEqual("");
