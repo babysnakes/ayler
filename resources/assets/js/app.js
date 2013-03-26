@@ -38,7 +38,7 @@ angular.module('ayler', [])
       }
     };
 
-    $scope.errorHandler = function(data, status, headers, config) {
+    $scope.errorHandler = function(data, status) {
       alert("Error: " + data + " (status: " + status + ")");
     };
 
@@ -63,19 +63,29 @@ angular.module('ayler', [])
     };
 
     $scope.loadNamespaces = function() {
+      $scope.nsLoading = true;
       $http.get("/api/ls")
         .success(function(data) {
+          $scope.nsLoading = false;
           $scope.handleResponse(data, $scope.namespacesHandler)
         })
-        .error($scope.errorHandler);
+        .error(function(data, status, headers, config) {
+          $scope.nsLoading = false;
+          errorHandler(data, status);
+        });
     };
 
     $scope.loadVars = function(namespace) {
+      $scope.varLoading = true;
       $http.get("/api/ls/" + namespace)
         .success(function (data) {
+          $scope.varLoading = false;
           $scope.handleResponse(data, $scope.varsHandler)
         })
-        .error($scope.errorHandler);
+        .error(function(data, status, headers, config) {
+          $scope.varLoading = false;
+          errorHandler(data, status);
+        });
     };
 
     $scope.refreshClicked = function($event) {
@@ -84,6 +94,8 @@ angular.module('ayler', [])
     };
 
     $scope.vars = []; // Initially empty until loadVars() is triggered;
+    $scope.nsLoading = false;
+    $scope.varLoading = false;
     $scope.loadNamespaces();
   })
   .controller("NamespaceCtrl", function ($scope, $routeParams, $http) {
@@ -96,13 +108,19 @@ angular.module('ayler', [])
     };
 
     $scope.loadDocstring = function() {
+      $scope.nsDocLoading = true;
       $http.get("/api/doc/" + $scope.nsName)
         .success(function(data) {
+          $scope.nsDocLoading = false;
           $scope.handleResponse(data, $scope.handleNsDoc)
         })
-        .error($scope.errorHandler);
+        .error(function(data, status, headers, config) {
+          $scope.nsDocLoading = false;
+          errorHandler(data, status);
+        });
     };
 
+    $scope.nsDocLoading = false;
     $scope.nsName = $routeParams.namespace;
     $scope.updateVars();
     $scope.loadDocstring();

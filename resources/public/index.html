@@ -32,18 +32,20 @@
       <div class="container row">
         <div class="container span6">
           <div class="filter">
-            <form class="form-search">
+            <form class="form-search span3">
               <input type="text" class="input-medium search-query"
                      placeholder="Filter namespaces" ng-model="nses"/>
             </form>
+            <img src="img/ajax-loader.gif"/ ng-show="nsLoading">
           </div>
         </div>
         <div class="container span6">
           <div class="filter">
-            <form class="form-search">
+            <form class="form-search span3">
               <input type="text" class="input-medium search-query"
                      placeholder="Filter vars" ng-model="vrs"/>
             </form>
+            <img src="img/ajax-loader.gif"/ ng-show="varLoading">
           </div>
         </div>
       </div>
