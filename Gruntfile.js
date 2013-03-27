@@ -76,6 +76,28 @@ module.exports = function(grunt) {
         files: "resources/assets/test/**/*.js",
         tasks: ['karma:unit:run']
       }
+    },
+
+    shell: {
+      options: {
+        failOnError: true
+      },
+      uberjar: {
+        command: "lein with-profile production do clean, uberjar",
+        options: {
+          stdout: true,
+          stderr: true
+        },
+      },
+      hashbang: {
+        command:  "echo '#!/usr/bin/env java -Xmx128m -jar' >target/ayler"
+      },
+      catjar: {
+        command: "cat target/ayler-standalone.jar >>target/ayler"
+      },
+      makeExec: {
+        command: "chmod +x target/ayler"
+      }
     }
   });
 
@@ -85,6 +107,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('default',
                      "Service. generates assets automatically upon change.",
@@ -94,4 +117,8 @@ module.exports = function(grunt) {
                      "Generate assets for production.",
                      ['clean', 'less:development',
                       'uglify:development', 'concat:production']);
+  grunt.registerTask('release',
+                     "Create a release executable (target/ayler).",
+                     ['production', "shell:uberjar", "shell:hashbang",
+                      "shell:catjar", "shell:makeExec"])
 };
