@@ -1,5 +1,0 @@
-# See README.md file for instructions!
-
-less: node_modules/.bin/collate -w -t resources/public/css/app.css resources/assets/less/application.less
-
-js: node_modules/.bin/collate -w -t resources/public/js/app.js resources/assets/js/jquery-1.8.3.js resources/assets/js/angular.js resources/assets/js/bootstrap/bootstrap-dropdown.js resources/assets/js/bootstrap/bootstrap-modal.js resources/assets/js/bootstrap/bootstrap-transition.js resources/assets/js/bootstrap/bootstrap-alert.js resources/assets/js/bootstrap/bootstrap-tab.js
