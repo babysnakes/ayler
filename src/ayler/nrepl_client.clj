@@ -8,7 +8,9 @@
 (defn set-remote
   "Set the host and port of the remote address"
   ([port] (set-remote port "localhost"))
-  ([port host] (reset! _remote [:port port :host host])))
+  ([port host]
+     (reset! _remote [:port port :host host])
+     (timbre/debug (str "Remote is: " @_remote))))
 
 (defn disconnect
   "disconnect from server"
@@ -29,6 +31,7 @@
   (if (empty? @_remote)
     {:status :not-connected}
     (try
+      (timbre/debug (str "Evaluating on remote nrepl: " code))
       (with-open [conn (apply repl/connect @_remote)]
         (-> (repl/client conn 1000)
             (repl/message {:op op :code code})
@@ -56,7 +59,7 @@
   "Composes parse-response with eval-on-remote-nrepl."
   (comp parse-response eval-on-remote-nrepl))
 
-(defmacro evaluate-remote
-  "Converts the supplied forms to strings and runs 'execute' on them."
+(defn evaluate
+  "Exceutes the provided form (as pr-str output) in an :eval op."
   [code]
-  `(execute :eval ~(pr-str code)))
+  (execute :eval code))
