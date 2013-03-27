@@ -1,4 +1,4 @@
-(defproject ayler "0.1.0-SNAPSHOT"
+(defproject ayler "0.1.0"
   :description "External namespace browswer for clojure projects."
   ;; :url "http://example.com/FIXME"
   :license {:name "GPLv3"
@@ -19,5 +19,11 @@
               :jvm-opts ["-Dayler.dev=t"]}}
 
   :main ayler.app
+  :uberjar-name "ayler-standalone.jar"
+  :uberjar-exclusions [#"^vendor/.*"
+                       #"^assets/.*"
+                       #"^public/.*/.gitkeep"
+                       ;; Avoid isnature errors (caused by exclusions?)
+                       #"(?i)^META-INF/[^/]*\.(SF|RSA)$"]
   :pedantic :warn
   :min-lein-version "2.0.0")

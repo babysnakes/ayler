@@ -8,7 +8,9 @@
 (defn set-remote
   "Set the host and port of the remote address"
   ([port] (set-remote port "localhost"))
-  ([port host] (reset! _remote [:port port :host host])))
+  ([port host]
+     (reset! _remote [:port port :host host])
+     (timbre/debug (str "Remote is: " @_remote))))
 
 (defn disconnect
   "disconnect from server"
