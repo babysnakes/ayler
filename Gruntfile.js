@@ -1,6 +1,9 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    distDir: "target/dist",
+    standaloneJar: "target/ayler-<%= pkg.version %>-standalone.jar",
+    distExecutable: "<%= distDir %>/ayler-<%= pkg.version %>",
 
     less: {
       development: {
@@ -82,7 +85,8 @@ module.exports = function(grunt) {
 
     shell: {
       options: {
-        failOnError: true
+        failOnError: true,
+        stderr: true
       },
       uberjar: {
         command: "lein with-profile production do clean, uberjar",
@@ -91,14 +95,20 @@ module.exports = function(grunt) {
           stderr: true
         },
       },
+      standalone: {
+        command: "cp <%= standaloneJar %> <%= distDir %>/ayler-<%= pkg.version %>.jar"
+      },
+      mkdirDistDir: {
+        command: "mkdir -p <%= distDir %>"
+      },
       hashbang: {
-        command:  "echo '#!/usr/bin/env java -Xmx128m -jar' >target/ayler"
+        command:  "echo '#!/usr/bin/env java -Xmx128m -jar' ><%= distExecutable %>"
       },
       catjar: {
-        command: "cat target/ayler-standalone.jar >>target/ayler"
+        command: "cat <%= standaloneJar %>>><%= distExecutable %>"
       },
       makeExec: {
-        command: "chmod +x target/ayler"
+        command: "chmod +x <%= distExecutable %>"
       }
     },
 
@@ -141,8 +151,10 @@ module.exports = function(grunt) {
                       'uglify:development', 'concat:production']);
   grunt.registerTask('release',
                      "Create a release executable (target/ayler).",
-                     ['production', "shell:uberjar", "shell:hashbang",
-                      "shell:catjar", "shell:makeExec"]),
+                     ['production', "shell:uberjar",
+                      "shell:mkdirDistDir", "shell:hashbang",
+                      "shell:catjar", "shell:makeExec",
+                      "shell:standalone"]),
   grunt.registerTask('version',
                      'Update a version according to one specified in package.json',
                      ["replace:project", "replace:component"])

@@ -22,7 +22,6 @@
               :jvm-opts ["-Dayler.dev=t"]}}
 
   :main ayler.app
-  :uberjar-name "ayler-standalone.jar"
 
   :pedantic :warn
   :min-lein-version "2.0.0")
