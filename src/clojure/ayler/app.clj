@@ -3,7 +3,8 @@
             [ayler.nrepl-client :as client])
   (:use [ayler.webapp :only (app)]
         [ring.adapter.jetty :only (run-jetty)]
-        [clojure.tools.cli :only (cli)])
+        [clojure.tools.cli :only (cli)]
+        ayler.version)
   (:gen-class))
 
 (def app-args
@@ -11,6 +12,7 @@
   [["-p" "--port" "port to run on (default 5000)" :parse-fn #(Integer. %)]
    ["-P", "nrepl port to connect to (required)" :parse-fn #(Integer. %)]
    ["-H", "nrepl host to connect to" :default "localhost"]
+   ["--version" "display the version and exit"]
    ["-l" "--level" "log level (warn info debug trace)" :parse-fn keyword]
    ["-h" "--help" "show this message"]])
 
@@ -28,6 +30,9 @@
         options (merge {:join? true} (select-keys arguments [:port]))]
     (when (contains? arguments :help)
       (println banner)
+      (System/exit 0))
+    (when (contains? arguments :version)
+      (println (str "Ayler " version))
       (System/exit 0))
     (when (contains? arguments :level)
       (timbre/set-level! (:level arguments)))

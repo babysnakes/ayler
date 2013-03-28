@@ -127,9 +127,17 @@ module.exports = function(grunt) {
         replacements: [{
           from: /("version": ")0.0.0(",\s*)/,
           to: "$1<%= pkg.version %>$2"
-        }]
-      }
-    }
+        }],
+      },
+      version: {
+        src: "src/clojure/ayler/version.clj",
+        overwrite: true,
+        replacements: [{
+          from: /(\(def version ")0.0.0("\))/,
+          to: "$1<%= pkg.version %>$2"
+        }],
+      },
+    },
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -157,5 +165,5 @@ module.exports = function(grunt) {
                       "shell:standalone"]),
   grunt.registerTask('version',
                      'Update a version according to one specified in package.json',
-                     ["replace:project", "replace:component"])
+                     ["replace:project", "replace:component", "replace:version"])
 };
