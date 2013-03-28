@@ -12,8 +12,8 @@ files = [
   "vendor/angular/angular.js",
   "vendor/bootstrap/docs/assets/js/bootstrap.js",
   "vendor/angular-*/*.js",
-  'assets/js/*.js',
-  'assets/test/unit/*.js'
+  'src/javascript/*.js',
+  'test/javascript/unit/*.js'
 ];
 
 
