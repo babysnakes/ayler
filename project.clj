@@ -13,6 +13,9 @@
                  [org.clojure/tools.cli "0.2.2"]
                  [ring/ring-json "0.2.0"]]
 
+  :source-paths ["src/clojure"]
+  :test-paths ["test/clojure"]
+  
   :profiles {:dev
              {:dependencies [[ring-mock "0.1.3"]]
               :plugins [[lein-pedantic "0.0.5"]]
@@ -20,10 +23,6 @@
 
   :main ayler.app
   :uberjar-name "ayler-standalone.jar"
-  :uberjar-exclusions [#"^vendor/.*"
-                       #"^assets/.*"
-                       #"^public/.*/.gitkeep"
-                       ;; Avoid isnature errors (caused by exclusions?)
-                       #"(?i)^META-INF/[^/]*\.(SF|RSA)$"]
+
   :pedantic :warn
   :min-lein-version "2.0.0")

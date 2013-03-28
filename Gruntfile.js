@@ -5,11 +5,11 @@ module.exports = function(grunt) {
     less: {
       development: {
         options: {
-          paths: ["resources/vendor/bootstrap/less/"]
+          paths: ["vendor/bootstrap/less/"]
         },
         files: {
           "resources/public/css/app.css":
-          "resources/assets/less/application.less"
+          "src/less/application.less"
         }
       }
       // todo: Create a production configuration as well!
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
           preserveComments: true
         },
         files: {
-          "resources/public/js/app.js": "resources/assets/js/app.js"
+          "resources/public/js/app.js": "src/javascript/app.js"
         }
       }
       // todo: Create a production configuration as well!
@@ -32,16 +32,16 @@ module.exports = function(grunt) {
     concat: {
       // pretty versions for development
       development: {
-        src: ["resources/vendor/jquery/jquery.js",
-              "resources/vendor/angular/angular.js",
-              "resources/vendor/bootstrap/docs/assets/js/bootstrap.js"],
+        src: ["vendor/jquery/jquery.js",
+              "vendor/angular/angular.js",
+              "vendor/bootstrap/docs/assets/js/bootstrap.js"],
         dest: "resources/public/js/dependencies.js"
       },
       // minified versions for production
       production: {
-        src: ["resources/vendor/jquery/jquery.min.js",
-              "resources/vendor/angular/angular.min.js",
-              "resources/vendor/bootstrap/docs/assets/js/bootstrap.min.js"],
+        src: ["vendor/jquery/jquery.min.js",
+              "vendor/angular/angular.min.js",
+              "vendor/bootstrap/docs/assets/js/bootstrap.min.js"],
         dest: "resources/public/js/dependencies.js"
       }
     },
@@ -51,31 +51,31 @@ module.exports = function(grunt) {
 
     karma: {
       unit: {
-        configFile: "resources/assets/karma.conf.js"
+        configFile: "config/karma.conf.js"
       }
     },
 
     watch: {
       css: {
-        files: ["resources/vendor/bootstrap/less/*.less",
-                "resources/assets/less/application.less"],
+        files: ["vendor/bootstrap/less/*.less",
+                "src/less/application.less"],
         tasks: ["less:development"],
         options: {
           nospawn: true
         }
       },
       deps: {
-        files: ["resources/vendor/jquery/jquery.js",
-                "resources/vendor/angular/angular.js",
-                "resources/vendor/bootstrap/docs/assets/js/bootstrap.js"],
+        files: ["vendor/jquery/jquery.js",
+                "vendor/angular/angular.js",
+                "vendor/bootstrap/docs/assets/js/bootstrap.js"],
         tasks: ["concat:development"]
       },
       app: {
-        files: "resources/assets/js/*.js",
+        files: "src/javascript/*.js",
         tasks: ["uglify:development", "karma:unit:run"]
       },
       karma: {
-        files: "resources/assets/test/**/*.js",
+        files: "test/javascript/unit/*.js",
         tasks: ['karma:unit:run']
       }
     },
