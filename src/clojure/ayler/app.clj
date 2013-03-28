@@ -26,7 +26,11 @@
 (defn -main
   "All starts here"
   [& args]
-  (let [[arguments _ banner] (apply cli args app-args)
+  (let [[arguments _ banner] (try (apply cli args app-args)
+                                  (catch Exception e
+                                    (println (str "Error: " (.getMessage e)))
+                                    (println "run with -h for usage.")
+                                    (System/exit 0)))
         options (merge {:join? true} (select-keys arguments [:port]))]
     (when (contains? arguments :help)
       (println banner)
