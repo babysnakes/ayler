@@ -109,6 +109,14 @@ module.exports = function(grunt) {
         replacements: [{
           from: /(\(defproject ayler ").*("\s*)/,
           to: "$1<%= pkg.version %>$2"
+        }],
+      },
+      component: {
+        src: "config/component.json",
+        overwrite: true,
+        replacements: [{
+          from: /("version": ")0.0.0(",\s*)/,
+          to: "$1<%= pkg.version %>$2"
         }]
       }
     }
@@ -137,5 +145,5 @@ module.exports = function(grunt) {
                       "shell:catjar", "shell:makeExec"]),
   grunt.registerTask('version',
                      'Update a version according to one specified in package.json',
-                     ["replace:project"])
+                     ["replace:project", "replace:component"])
 };
