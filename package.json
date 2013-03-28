@@ -1,6 +1,6 @@
 {
   "name": "ayler",
-  "version": "0.0.0",
+  "version": "0.2.0-SNAPSHOT",
   "description": "Utilities to help during the development of ayler",
   "dependencies": {
     "bower": "~0.8.5",
