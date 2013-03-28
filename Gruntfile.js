@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+
     less: {
       development: {
         options: {
@@ -12,7 +14,7 @@ module.exports = function(grunt) {
       }
       // todo: Create a production configuration as well!
     },
-    
+
     uglify: {
       development: {
         options: {
@@ -98,6 +100,17 @@ module.exports = function(grunt) {
       makeExec: {
         command: "chmod +x target/ayler"
       }
+    },
+
+    replace: {
+      project: {
+        src: "project.clj",
+        overwrite: true,
+        replacements: [{
+          from: /(\(defproject ayler ").*("\s*)/,
+          to: "$1<%= pkg.version %>$2"
+        }]
+      }
     }
   });
 
@@ -108,6 +121,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   grunt.registerTask('default',
                      "Service. generates assets automatically upon change.",
@@ -120,5 +134,8 @@ module.exports = function(grunt) {
   grunt.registerTask('release',
                      "Create a release executable (target/ayler).",
                      ['production', "shell:uberjar", "shell:hashbang",
-                      "shell:catjar", "shell:makeExec"])
+                      "shell:catjar", "shell:makeExec"]),
+  grunt.registerTask('version',
+                     'Update a version according to one specified in package.json',
+                     ["replace:project"])
 };

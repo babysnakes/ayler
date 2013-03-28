@@ -61,6 +61,15 @@ of most common invocations:
   executable jar (*target/ayler*) run:
   * `grunt release`
 
+### Managing versions
+The application version should be configured in `package.json` and not
+in the expected `project.clj`. After changing the version in
+`package.json` run (see above about *grunt*):
+
+    # grunt version
+
+and it will replace the version in all required places.
+
 ## License
 Copyright © 2013 Haim Ashkenazi
 
