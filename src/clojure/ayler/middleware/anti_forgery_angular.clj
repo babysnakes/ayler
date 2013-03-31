@@ -12,12 +12,19 @@ https://github.com/weavejester/ring-anti-forgery
 
 Eventually it should be extracted to it's own mini project."
   (:require [taoensso.timbre :as timbre]
-            [crypto.random :as random]))
+            [crypto.random :as random])
+  (:use [ring.util.codec :only (url-decode)]))
 
 (def ^:dynamic
   *anti-forgery-token*
   "Binding that stores a anti-forgery token that must be included in
   POST forms if the handler is wrapped in wrap-anti-forgery.")
+
+(defn- token-from-headers
+  "Extract and unencodes the xsrf-token from the supplied request headers."
+  [request]
+  (if-let [token (get-in request [:headers "x-xsrf-token"])]
+    (url-decode token)))
 
 (defn- session-token
   [request]
@@ -41,7 +48,7 @@ Eventually it should be extracted to it's own mini project."
 
 (defn- valid-request?
   [request]
-  (let [headers-token (-> request (get-in [:headers "X-XSRF-TOKEN"]))
+  (let [headers-token (token-from-headers request)
         stored-token (session-token request)]
     (and headers-token
          stored-token

@@ -11,15 +11,18 @@
          403 (request :post "/")
          ;; request with headers but no session (fake token)
          403 (-> (request :post "/")
-                 (assoc-in [:headers "X-XSRF-TOKEN"] "fake-token:-not-in-session"))
+                 (assoc-in [:headers "x-xsrf-tokennre"] "fake-token:-not-in-session"))
          ;; different token in header and session
          403 (-> (request :post "/")
                  (assoc :session {:xsrf-token "saved-token"})
-                 (assoc-in [:headers "X-XSRF-TOKEN"] "fake-token"))
+                 (assoc-in [:headers "x-xsrf-token"] "fake-token"))
          ;; valid request
          200 (-> (request :post "/")
                  (assoc :session {:xsrf-token "saved-token"})
-                 (assoc-in [:headers "X-XSRF-TOKEN"] "saved-token")))))
+                 (assoc-in [:headers "x-xsrf-token"] "saved-token"))
+         200 (-> (request :post "/")
+                 (assoc :session {:xsrf-token "58CHwYz/smVZEwwIz+l1J8Wjf/UCnlLTZzPggDRRIVk9DZniVs6JCFDZgMray2Ack9X0Nz4wPpGmoR7I"})
+                 (assoc-in [:headers "x-xsrf-token"] "58CHwYz%2FsmVZEwwIz%2Bl1J8Wjf%2FUCnlLTZzPggDRRIVk9DZniVs6JCFDZgMray2Ack9X0Nz4wPpGmoR7I")))))
 
 (deftest token-in-session-test
   (let [response {:status 200, :headers {}, :body "Foo"}
