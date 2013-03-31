@@ -81,7 +81,7 @@ function NamespaceListCtrl($scope, $http) {
       })
       .error(function(data, status, headers, config) {
         $scope.nsLoading = false;
-        errorHandler(data, status);
+        $scope.errorHandler(data, status);
       });
   };
 
@@ -94,7 +94,7 @@ function NamespaceListCtrl($scope, $http) {
       })
       .error(function(data, status, headers, config) {
         $scope.varLoading = false;
-        errorHandler(data, status);
+        $scope.errorHandler(data, status);
       });
   };
 
@@ -127,7 +127,7 @@ function NamespaceCtrl($scope, $routeParams, $http) {
       })
       .error(function(data, status, headers, config) {
         $scope.nsDocLoading = false;
-        errorHandler(data, status);
+        $scope.errorHandler(data, status);
       });
   };
 
@@ -163,7 +163,7 @@ function VarInfoCtrl($scope, $routeParams, $http) {
       })
       .error(function(data, status, header, config) {
         $scope.docLoading = false;
-        errorHandler(data, status);
+        $scope.errorHandler(data, status);
       });
   };
 
@@ -176,7 +176,7 @@ function VarInfoCtrl($scope, $routeParams, $http) {
       })
       .error(function(data, status, header, config) {
         $scope.sourceLoading = false;
-        errorHandler(data, status);
+        $scope.errorHandler(data, status);
       });
   };
 
