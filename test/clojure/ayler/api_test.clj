@@ -1,5 +1,6 @@
 (ns ayler.api-test
-  (:require [ayler.api :as api])
+  (:require [ayler.api :as api]
+            [ayler.nrepl-client :as nclient])
   (:use clojure.test))
 
 (deftest nses-to-name-and-url
@@ -30,3 +31,9 @@
     (is (= (#'api/apply-handler-if-successfull {:status :done :response [4 5]}
                                                (fn [x] (map inc x)))
            {:status :done :response [5 6]}))))
+
+(deftest convert-port-input-to-integer
+  (#'api/set-remote "5000" "localhost")
+  (let [data @#'nclient/_remote]
+    ;; TODO: why do I have to deref it twice?
+    (is (= (second @data) 5000))))
