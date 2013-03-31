@@ -11,7 +11,8 @@
                   :exclusions [org.clojure/tools.macro]]
                  [com.taoensso/timbre "1.5.2"]
                  [org.clojure/tools.cli "0.2.2"]
-                 [ring/ring-json "0.2.0"]]
+                 [ring/ring-json "0.2.0"]
+                 [crypto-random "1.1.0"]]
 
   :source-paths ["src/clojure"]
   :test-paths ["test/clojure"]
