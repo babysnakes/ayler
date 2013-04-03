@@ -52,6 +52,7 @@ function MainCtrl($scope) {
 
 function NamespaceListCtrl($scope, $http, $location) {
   $scope.$on("connect", function(event, args) {
+    if (args && args.disconnected) { $scope.disconnected = true };
     $scope.displayConnectForm();
   });
 
@@ -75,6 +76,7 @@ function NamespaceListCtrl($scope, $http, $location) {
         $location.path("/");
         // TODO: Ugly hack around reloading the page. How can we do it
         // nicer?
+        $scope.disconnected = false;
         $scope.vars = [];
         $scope.loadNamespaces();
       })

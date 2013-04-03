@@ -69,6 +69,10 @@
       <div class="modal-header">
         <h3>Connect to remote nrepl</h3>
       </div>
+      <div ng-show="disconnected" class="alert alert-error">
+        You seem to be disconnected from the nrepl server. Please
+        reconnect!
+      </div>
       <form ng-submit="connect()">
         <div class="modal-body">
           <!-- Insert error here -->
@@ -79,7 +83,8 @@
           <input type="text" ng-model="remotePort" name="host" />
         </div>
         <div class="modal-footer">
-          <input type="submit" id="submit" value="Submit" class="btn" />
+          <input type="submit" id="submit" value="Submit"
+                 class="btn btn-inverse" />
         </div>
       </form>
     </div>
