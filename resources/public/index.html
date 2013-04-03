@@ -65,5 +65,23 @@
       </div>
       <div ng-view></div>
     </div>
+    <div id="connectForm" class="modal hide fade">
+      <div class="modal-header">
+        <h3>Connect to remote nrepl</h3>
+      </div>
+      <form ng-submit="connect()">
+        <div class="modal-body">
+          <!-- Insert error here -->
+          <label>Host</label>
+          <input type="text" placeholder="Default: Localhost"
+                 ng-model="remoteHost" name="port" />
+          <label>Port</label>
+          <input type="text" ng-model="remotePort" name="host" />
+        </div>
+        <div class="modal-footer">
+          <input type="submit" id="submit" value="Submit" class="btn" />
+        </div>
+      </form>
+    </div>
   </body>
 </html>

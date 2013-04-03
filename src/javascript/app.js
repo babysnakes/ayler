@@ -28,10 +28,10 @@ function MainCtrl($scope) {
   $scope.handleResponse = function (response, handler) {
     switch (response.status) {
     case "disconnected":
-      alert("Disconnected");
+      $scope.$broadcast("connect", {disconnected: true});
       break;
     case "not-connected":
-      alert("Please connect");
+      $scope.$broadcast("connect");
       break;
     case "error":
       alert(response.response);
@@ -50,10 +50,37 @@ function MainCtrl($scope) {
   $scope.title = "";
 };
 
-function NamespaceListCtrl($scope, $http) {
+function NamespaceListCtrl($scope, $http, $location) {
+  $scope.$on("connect", function(event, args) {
+    $scope.displayConnectForm();
+  });
+
   $scope.notImplemented = function($event) {
     $event.preventDefault();
     console.log("not-implemented!");
+  };
+
+  // Display the connect form modal.
+  $scope.displayConnectForm = function() {
+    $("#connectForm").modal('show');
+  };
+
+  $scope.connect = function(){
+    $http.post("/api/remote/", {
+      "port": $scope.remotePort,
+      "host": $scope.remoteHost
+    })
+      .success(function(data) {
+        $("#connectForm").modal('hide');
+        $location.path("/");
+        // TODO: Ugly hack around reloading the page. How can we do it
+        // nicer?
+        $scope.vars = [];
+        $scope.loadNamespaces();
+      })
+      .error(function(data, status, headers, config) {
+        console.log("faild with status: " + status + " message: " + data)
+      })
   };
 
   $scope.namespacesHandler = function(response) {
