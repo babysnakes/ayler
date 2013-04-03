@@ -32,8 +32,16 @@
                                                (fn [x] (map inc x)))
            {:status :done :response [5 6]}))))
 
-(deftest convert-port-input-to-integer
-  (#'api/set-remote "5000" "localhost")
-  (let [data @#'nclient/_remote]
+(deftest set-remote
+  (let [response (#'api/set-remote "5000" "localhost")
+        data @#'nclient/_remote]
     ;; TODO: why do I have to deref it twice?
-    (is (= (second @data) 5000))))
+    (is (= (second @data) 5000)
+        "converts strings to integers")
+    (is (map? response) "returns map")
+    (is (= (:status response) 200) "status on success"))
+  (testing "handle empty ports with invalid request"
+    (let [response (#'api/set-remote "" "")]
+      (is (= (:status response) 400))
+      (is (re-find #"required" (:body response))))))
+

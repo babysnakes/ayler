@@ -74,9 +74,13 @@
 
 (defn- set-remote
   [port host]
-  (let [host (if (empty? host) "localhost" host)
-        port (Integer. port)]
-    (client/set-remote port host)))
+  (if (empty? port)
+    (-> (response "Error! port is required!")
+        (assoc :status 400))
+    (let [host (if (empty? host) "localhost" host)
+          port (Integer. port)]
+      (-> (client/set-remote port host)
+          response))))
 
 (defroutes routes
   (GET "/ls" _ (response (loaded-namespaces)))
@@ -86,8 +90,7 @@
        (response (var-doc namespace var)))
   (GET "/source/:namespace/:var" [namespace var]
        (response (var-source namespace var)))
-  (POST "/remote/" [port host :as request]
-        (response (set-remote port host))))
+  (POST "/remote/" [port host :as request] (set-remote port host)))
 
 (def app
   (-> routes
