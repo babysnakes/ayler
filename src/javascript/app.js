@@ -34,7 +34,7 @@ function MainCtrl($scope) {
       $scope.$broadcast("connect");
       break;
     case "error":
-      alert(response.response);
+      $scope.errorHandler(response.response)
       break;
     case "done":
       return handler(response.response);
@@ -44,9 +44,21 @@ function MainCtrl($scope) {
   };
 
   $scope.errorHandler = function(data, status) {
-    alert("Error: " + data + " (status: " + status + ")");
+    if (status === undefined) {
+      $scope.errors.push(data);
+    } else {
+      $scope.errors.push(data + " (status: " + status + ")")
+    }
+    $scope.anyErrors = true;
   };
 
+  $scope.clearErrors = function() {
+    $scope.errors = [];
+    $scope.anyErrors = false;
+  }
+
+  $scope.errors = [];
+  $scope.anyErrors = false;
   $scope.title = "";
 };
 
@@ -58,7 +70,7 @@ function NamespaceListCtrl($scope, $http, $location) {
 
   $scope.notImplemented = function($event) {
     $event.preventDefault();
-    console.log("not-implemented!");
+    alert("not-implemented!");
   };
 
   // Display the connect form modal.
@@ -81,7 +93,7 @@ function NamespaceListCtrl($scope, $http, $location) {
         $scope.loadNamespaces();
       })
       .error(function(data, status, headers, config) {
-        console.log("faild with status: " + status + " message: " + data)
+        $scope.errorHandler(data, status)
       })
   };
 
