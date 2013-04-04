@@ -46,6 +46,8 @@ function MainCtrl($scope) {
   $scope.errorHandler = function(data, status) {
     if (status === undefined) {
       $scope.errors.push(data);
+    } else if (status === 403) { // anti-forgery expired
+      $scope.errors.push("Your session has expired. Please refresh the browser.");
     } else {
       $scope.errors.push(data + " (status: " + status + ")");
     }
