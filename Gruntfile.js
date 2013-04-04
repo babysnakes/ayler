@@ -93,7 +93,7 @@ module.exports = function(grunt) {
         options: {
           stdout: true,
           stderr: true
-        },
+        }
       },
       standalone: {
         command: "cp <%= standaloneJar %> <%= distDir %>/ayler-<%= pkg.version %>.jar"
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
         replacements: [{
           from: /(\(defproject ayler ").*("\s*)/,
           to: "$1<%= pkg.version %>$2"
-        }],
+        }]
       },
       component: {
         src: "config/component.json",
@@ -127,7 +127,7 @@ module.exports = function(grunt) {
         replacements: [{
           from: /("version": ")0.0.0(",\s*)/,
           to: "$1<%= pkg.version %>$2"
-        }],
+        }]
       },
       version: {
         src: "src/clojure/ayler/version.clj",
@@ -135,9 +135,9 @@ module.exports = function(grunt) {
         replacements: [{
           from: /(\(def version ")0.0.0("\))/,
           to: "$1<%= pkg.version %>$2"
-        }],
-      },
-    },
+        }]
+      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -165,5 +165,5 @@ module.exports = function(grunt) {
                       "shell:standalone"]),
   grunt.registerTask('version',
                      'Update a version according to one specified in package.json',
-                     ["replace:project", "replace:component", "replace:version"])
+                     ["replace:project", "replace:component", "replace:version"]);
 };

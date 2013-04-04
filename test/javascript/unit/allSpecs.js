@@ -19,7 +19,9 @@ describe("Application: Ayler", function() {
     describe("#handleResponse", function () {
       it("returns the handled response if status is done", function () {
         var response = {status: "done", response: "hello"};
-        var handler = function(response) {return response + " world!"};
+        var handler = function(response) {
+            return response + " world!";
+        };
 
         expect(scope.handleResponse(response, handler)).toEqual("hello world!");
       });

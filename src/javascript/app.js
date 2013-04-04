@@ -34,7 +34,7 @@ function MainCtrl($scope) {
       $scope.$broadcast("connect");
       break;
     case "error":
-      $scope.errorHandler(response.response)
+      $scope.errorHandler(response.response);
       break;
     case "done":
       return handler(response.response);
@@ -47,7 +47,7 @@ function MainCtrl($scope) {
     if (status === undefined) {
       $scope.errors.push(data);
     } else {
-      $scope.errors.push(data + " (status: " + status + ")")
+      $scope.errors.push(data + " (status: " + status + ")");
     }
     $scope.anyErrors = true;
   };
@@ -55,7 +55,7 @@ function MainCtrl($scope) {
   $scope.clearErrors = function() {
     $scope.errors = [];
     $scope.anyErrors = false;
-  }
+  };
 
   $scope.errors = [];
   $scope.anyErrors = false;
@@ -64,7 +64,9 @@ function MainCtrl($scope) {
 
 function NamespaceListCtrl($scope, $http, $location) {
   $scope.$on("connect", function(event, args) {
-    if (args && args.disconnected) { $scope.disconnected = true };
+    if (args && args.disconnected) {
+      $scope.disconnected = true;
+    };
     $scope.displayConnectForm();
   });
 
@@ -93,8 +95,8 @@ function NamespaceListCtrl($scope, $http, $location) {
         $scope.loadNamespaces();
       })
       .error(function(data, status, headers, config) {
-        $scope.errorHandler(data, status)
-      })
+        $scope.errorHandler(data, status);
+      });
   };
 
   $scope.namespacesHandler = function(response) {
@@ -118,7 +120,7 @@ function NamespaceListCtrl($scope, $http, $location) {
     $http.get("/api/ls")
       .success(function(data) {
         $scope.nsLoading = false;
-        $scope.handleResponse(data, $scope.namespacesHandler)
+        $scope.handleResponse(data, $scope.namespacesHandler);
       })
       .error(function(data, status, headers, config) {
         $scope.nsLoading = false;
@@ -131,7 +133,7 @@ function NamespaceListCtrl($scope, $http, $location) {
     $http.get("/api/ls/" + namespace)
       .success(function (data) {
         $scope.varLoading = false;
-        $scope.handleResponse(data, $scope.varsHandler)
+        $scope.handleResponse(data, $scope.varsHandler);
       })
       .error(function(data, status, headers, config) {
         $scope.varLoading = false;
@@ -152,7 +154,7 @@ function NamespaceListCtrl($scope, $http, $location) {
 
 function NamespaceCtrl($scope, $routeParams, $http) {
   $scope.handleNsDoc = function(response) {
-    $scope.docstring = response || "No Namespace Docs."
+    $scope.docstring = response || "No Namespace Docs.";
   };
 
   $scope.updateVars = function() {
@@ -164,7 +166,7 @@ function NamespaceCtrl($scope, $routeParams, $http) {
     $http.get("/api/doc/" + $scope.nsName)
       .success(function(data) {
         $scope.nsDocLoading = false;
-        $scope.handleResponse(data, $scope.handleNsDoc)
+        $scope.handleResponse(data, $scope.handleNsDoc);
       })
       .error(function(data, status, headers, config) {
         $scope.nsDocLoading = false;
@@ -222,7 +224,7 @@ function VarInfoCtrl($scope, $routeParams, $http) {
   };
 
   $scope.nsName = $routeParams.namespace;
-  $scope.varName = $routeParams.var
+  $scope.varName = $routeParams.var;
   $scope.loadDocstring();
   $scope.loadSource();
   $scope.refreshVars();
