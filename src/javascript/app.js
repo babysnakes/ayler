@@ -43,6 +43,8 @@ function MainCtrl($scope) {
     }
   };
 
+  // Global error handler. Every error in this application should
+  // invoke this method.
   $scope.errorHandler = function(data, status) {
     if (status === undefined) {
       $scope.errors.push(data);
@@ -54,6 +56,8 @@ function MainCtrl($scope) {
     $scope.anyErrors = true;
   };
 
+  // Clears the error (e.g. when pressing "Dismiss") so they won't
+  // appear the next time the connection form displays.
   $scope.clearErrors = function() {
     $scope.errors = [];
     $scope.anyErrors = false;
@@ -65,6 +69,9 @@ function MainCtrl($scope) {
 };
 
 function NamespaceListCtrl($scope, $http, $location) {
+  // Listener for the "connect" event to display the connnection
+  // form. Optionally set the disconnected flag which causes a
+  // disconnection error to display.
   $scope.$on("connect", function(event, args) {
     if (args && args.disconnected) {
       $scope.disconnected = true;
@@ -82,12 +89,13 @@ function NamespaceListCtrl($scope, $http, $location) {
     $("#connectForm").modal('show');
   };
 
+  // Submit the connection form.
+  // TODO: Needs cleanup BAD!
   $scope.connect = function(){
     $http.post("/api/remote/", {
       "port": $scope.remotePort,
       "host": $scope.remoteHost
-    })
-      .success(function(data) {
+    }).success(function(data) {
         $("#connectForm").modal('hide');
         $location.path("/");
         // TODO: Ugly hack around reloading the page. How can we do it
@@ -95,28 +103,28 @@ function NamespaceListCtrl($scope, $http, $location) {
         $scope.disconnected = false;
         $scope.vars = [];
         $scope.loadNamespaces();
-      })
-      .error(function(data, status, headers, config) {
+    }).error(function(data, status, headers, config) {
         $scope.errorHandler(data, status);
-      });
+    });
   };
 
+  // Handler for the namespace-list-response.
   $scope.namespacesHandler = function(response) {
     $scope.namespaces = response;
   };
 
+  // Handler for the var-list-response.
   $scope.varsHandler = function(response) {
     $scope.vars = response;
   };
 
-  $scope.varsHandler = function(response) {
-    $scope.vars = response;
-  };
-
+  // Reset vars filter. Used when selecting new namespace to display.
+  // TODO: Should be part of a clean procedure?
   $scope.resetVarsFilter = function() {
     $scope.vrs = "";
   };
 
+  // Loads the available namespaces.
   $scope.loadNamespaces = function() {
     $scope.nsLoading = true;
     $http.get("/api/ls")
@@ -130,6 +138,7 @@ function NamespaceListCtrl($scope, $http, $location) {
       });
   };
 
+  // Loads available vars in a namespace
   $scope.loadVars = function(namespace) {
     $scope.varLoading = true;
     $http.get("/api/ls/" + namespace)
@@ -143,26 +152,25 @@ function NamespaceListCtrl($scope, $http, $location) {
       });
   };
 
+  // Reloads namespace list. Invoked by ngClick.
   $scope.refreshClicked = function($event) {
     $event.preventDefault();
     $scope.loadNamespaces();
   };
 
   $scope.vars = []; // Initially empty until loadVars() is triggered;
-  $scope.nsLoading = false;
-  $scope.varLoading = false;
+  $scope.nsLoading = false; // ngShow flag
+  $scope.varLoading = false; // ngShow flag
   $scope.loadNamespaces();
 };
 
 function NamespaceCtrl($scope, $routeParams, $http) {
+  // Handler for displaying namespace docstring.
   $scope.handleNsDoc = function(response) {
     $scope.docstring = response || "No Namespace Docs.";
   };
 
-  $scope.updateVars = function() {
-    $scope.loadVars($scope.nsName);
-  };
-
+  // Loads the docstring for the namespace.
   $scope.loadDocstring = function() {
     $scope.nsDocLoading = true;
     $http.get("/api/doc/" + $scope.nsName)
@@ -176,29 +184,35 @@ function NamespaceCtrl($scope, $routeParams, $http) {
       });
   };
 
-  $scope.nsDocLoading = false;
+  $scope.nsDocLoading = false; // ngShow flag.
   $scope.nsName = $routeParams.namespace;
-  $scope.updateVars();
+  $scope.loadVars($scope.nsName);
   $scope.loadDocstring();
   $scope.resetVarsFilter();
   $scope.setTitle($scope.nsName);
 };
 
 function VarInfoCtrl($scope, $routeParams, $http) {
+  // Handler for var docstring.
   $scope.handleVarDoc = function(response) {
     $scope.docstring = response || "No Docs.";
   };
 
+  // Handler for var source.
   $scope.handleSource = function(response) {
     $scope.source = response || "Source not found.";
   };
 
+  // Since currently we display either this controller or the
+  // NamespaceCtrl we may need to load the vars on controller
+  // initialization if the user accessed var url directly.
   $scope.refreshVars = function() {
     if ($scope.vars.length === 0) {
       $scope.loadVars($scope.nsName);
     };
   };
 
+  // Loads the var's docstring.
   $scope.loadDocstring = function() {
     $scope.docLoading = true;
     $http.get("/api/doc/" + $scope.nsName + "/" + $scope.varName)
@@ -212,6 +226,7 @@ function VarInfoCtrl($scope, $routeParams, $http) {
       });
   };
 
+  // Loads the var's source
   $scope.loadSource = function() {
     $scope.sourceLoading = true;
     $http.get("/api/source/" + $scope.nsName + "/" + $scope.varName)
