@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-block alert-error" ng-show="anyErrors">
+      <div class="alert alert-block alert-error" id="errors" ng-show="anyErrors">
         <p><strong>Error(s):</strong></p>
         <ul>
           <li ng-repeat="error in errors">{{error}}</li>
@@ -42,7 +42,7 @@
         <div class="container span6">
           <div class="filter">
             <form class="form-search span3">
-              <input type="text" class="input-medium search-query"
+              <input type="text" class="input-medium search-query" name="nses"
                      placeholder="Filter namespaces" ng-model="nses"/>
             </form>
             <img src="img/ajax-loader.gif"/ ng-show="nsLoading">
@@ -51,21 +51,21 @@
         <div class="container span6">
           <div class="filter">
             <form class="form-search span3">
-              <input type="text" class="input-medium search-query"
+              <input type="text" class="input-medium search-query" name="vrs"
                      placeholder="Filter vars" ng-model="vrs"/>
             </form>
             <img src="img/ajax-loader.gif"/ ng-show="varLoading">
           </div>
         </div>
       </div>
-      <div class="container span6 list-window">
+      <div class="container span6 list-window nses-window">
         <ul>
           <li ng-repeat="ns in namespaces | filter:nses">
             <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
           </li>
         </ul>
       </div>
-      <div class="container span6 list-window">
+      <div class="container span6 list-window vrs-window">
         <ul>
           <li ng-repeat="var in vars | filter:vrs">
             <a ng-href="#/{{var.url}}">{{var.name}}</a>

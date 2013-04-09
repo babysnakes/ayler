@@ -35,10 +35,17 @@ module.exports = function(grunt) {
     concat: {
       // pretty versions for development
       development: {
-        src: ["vendor/jquery/jquery.js",
-              "vendor/angular/angular.js",
-              "vendor/bootstrap/docs/assets/js/bootstrap.js"],
-        dest: "resources/public/js/dependencies.js"
+        files: {
+          "resources/public/js/dependencies.js": [
+            "vendor/jquery/jquery.js",
+            "vendor/angular/angular.js",
+            "vendor/bootstrap/docs/assets/js/bootstrap.js"],
+          "resources/public/js/angular-scenario.js": [
+            "vendor/angular-scenario/angular-scenario.js"],
+          "resources/public/js/scenarios.js": [
+            "test/javascript/e2e/scenarios.js"],
+          "resources/public/test/test.html": ["test/html/e2e.html"]
+        },
       },
       // minified versions for production
       production: {
@@ -50,7 +57,8 @@ module.exports = function(grunt) {
     },
 
     clean: ["resources/public/js/*.js",
-            "resources/public/css/*.css"],
+            "resources/public/css/*.css",
+            "resources/public/test"],
 
     karma: {
       unit: {
@@ -70,8 +78,14 @@ module.exports = function(grunt) {
       deps: {
         files: ["vendor/jquery/jquery.js",
                 "vendor/angular/angular.js",
-                "vendor/bootstrap/docs/assets/js/bootstrap.js"],
-        tasks: ["concat:development"]
+                "vendor/angular-scenario/angular-scenario.js",
+                "vendor/bootstrap/docs/assets/js/bootstrap.js",
+                "test/javascript/e2e/scenarios.js",
+                "test/html/e2e.html"],
+        tasks: ["concat:development"],
+        options: {
+          nospawn: true
+        }
       },
       app: {
         files: "src/javascript/*.js",
