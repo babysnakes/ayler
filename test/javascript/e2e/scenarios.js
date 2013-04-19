@@ -25,6 +25,10 @@ describe("Regular workflow", function() {
       sleep(0.3);
     });
 
+    it("displays the namespace in the title", function() {
+      expect(element("title", "title").text()).toMatch(/clojure.java.io/);
+    });
+
     it("displays the var list", function() {
       expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
     });
@@ -49,6 +53,11 @@ describe("Regular workflow", function() {
     beforeEach(function() {
       browser().navigateTo("/#/clojure.main/with-bindings");
       sleep(0.3);
+    });
+
+    it("displays the namespace and var in the title", function() {
+      expect(element("title", "title").text())
+        .toMatch(/clojure.main \/ with-bindings/);
     });
 
     it("displays namespaces and vars list", function() {

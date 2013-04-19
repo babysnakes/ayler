@@ -242,6 +242,7 @@ function VarInfoCtrl($scope, $routeParams, $http) {
 
   $scope.nsName = $routeParams.namespace;
   $scope.varName = $routeParams.var;
+  $scope.setTitle($scope.nsName + " / " + $scope.varName)
   $scope.loadDocstring();
   $scope.loadSource();
   $scope.refreshVars();
