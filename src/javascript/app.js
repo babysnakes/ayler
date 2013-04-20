@@ -56,6 +56,26 @@ function MainCtrl($scope) {
     $scope.anyErrors = true;
   };
 
+  // A common behavior for $http.get.
+  //
+  // params:
+  // * http - $http
+  // * url - The path to get
+  // * flag - The attribute that ngShow uses for busy indicator
+  // * handler - The handler for success response
+  $scope.httpFetch = function(http, url, flag, handler) {
+    flag = true;
+    http.get(url)
+      .success(function(data) {
+        flag = false;
+        $scope.handleResponse(data, handler);
+      })
+      .error(function(data, status, headers, config) {
+        flag = false;
+        $scope.errorHandler(data, status);
+      });
+  };
+
   // Clears the error (e.g. when pressing "Dismiss") so they won't
   // appear the next time the connection form displays.
   $scope.clearErrors = function() {
@@ -126,30 +146,13 @@ function NamespaceListCtrl($scope, $http, $location) {
 
   // Loads the available namespaces.
   $scope.loadNamespaces = function() {
-    $scope.nsLoading = true;
-    $http.get("/api/ls")
-      .success(function(data) {
-        $scope.nsLoading = false;
-        $scope.handleResponse(data, $scope.namespacesHandler);
-      })
-      .error(function(data, status, headers, config) {
-        $scope.nsLoading = false;
-        $scope.errorHandler(data, status);
-      });
+    $scope.httpFetch($http, "api/ls", $scope.nsLoading, $scope.namespacesHandler);
   };
 
   // Loads available vars in a namespace
   $scope.loadVars = function(namespace) {
-    $scope.varLoading = true;
-    $http.get("/api/ls/" + namespace)
-      .success(function (data) {
-        $scope.varLoading = false;
-        $scope.handleResponse(data, $scope.varsHandler);
-      })
-      .error(function(data, status, headers, config) {
-        $scope.varLoading = false;
-        $scope.errorHandler(data, status);
-      });
+    $scope.httpFetch($http, "/api/ls/" + namespace,
+                     $scope.varLoading, $scope.varsHandler);
   };
 
   // Reloads namespace list. Invoked by ngClick.
@@ -172,16 +175,8 @@ function NamespaceCtrl($scope, $routeParams, $http) {
 
   // Loads the docstring for the namespace.
   $scope.loadDocstring = function() {
-    $scope.nsDocLoading = true;
-    $http.get("/api/doc/" + $scope.nsName)
-      .success(function(data) {
-        $scope.nsDocLoading = false;
-        $scope.handleResponse(data, $scope.handleNsDoc);
-      })
-      .error(function(data, status, headers, config) {
-        $scope.nsDocLoading = false;
-        $scope.errorHandler(data, status);
-      });
+    var docstringUrl = "/api/doc/" + $scope.nsName;
+    $scope.httpFetch($http, docstringUrl, $scope.nsDocLoading, $scope.handleNsDoc);
   };
 
   $scope.nsDocLoading = false; // ngShow flag.
@@ -214,35 +209,19 @@ function VarInfoCtrl($scope, $routeParams, $http) {
 
   // Loads the var's docstring.
   $scope.loadDocstring = function() {
-    $scope.docLoading = true;
-    $http.get("/api/doc/" + $scope.nsName + "/" + $scope.varName)
-      .success(function(data) {
-        $scope.docLoading = false;
-        $scope.handleResponse(data, $scope.handleVarDoc);
-      })
-      .error(function(data, status, header, config) {
-        $scope.docLoading = false;
-        $scope.errorHandler(data, status);
-      });
+    var docstringUrl = "/api/doc/" + $scope.nsName + "/" + $scope.varName;
+    $scope.httpFetch($http, docstringUrl, $scope.docLoading, $scope.handleVarDoc);
   };
 
   // Loads the var's source
   $scope.loadSource = function() {
-    $scope.sourceLoading = true;
-    $http.get("/api/source/" + $scope.nsName + "/" + $scope.varName)
-      .success(function(data) {
-        $scope.sourceLoading = false;
-        $scope.handleResponse(data, $scope.handleSource);
-      })
-      .error(function(data, status, header, config) {
-        $scope.sourceLoading = false;
-        $scope.errorHandler(data, status);
-      });
+    var sourceUrl = "/api/source/" + $scope.nsName + "/" + $scope.varName;
+    $scope.httpFetch($http, sourceUrl, $scope.sourceLoading, $scope.handleSource);
   };
 
   $scope.nsName = $routeParams.namespace;
   $scope.varName = $routeParams.var;
-  $scope.setTitle($scope.nsName + " / " + $scope.varName)
+  $scope.setTitle($scope.nsName + " / " + $scope.varName);
   $scope.loadDocstring();
   $scope.loadSource();
   $scope.refreshVars();

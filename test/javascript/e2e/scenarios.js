@@ -6,7 +6,7 @@ describe("Regular workflow", function() {
   describe("root page", function() {
     beforeEach(function() {
       browser().navigateTo("/");
-      sleep(0.3);
+      sleep(0.4);
     });
 
     it("fetches namespaces list on '/'", function() {
@@ -22,7 +22,7 @@ describe("Regular workflow", function() {
   describe("Namespace browsing", function() {
     beforeEach(function() {
       browser().navigateTo("/#/clojure.java.io");
-      sleep(0.3);
+      sleep(0.4);
     });
 
     it("displays the namespace in the title", function() {
@@ -52,7 +52,7 @@ describe("Regular workflow", function() {
   describe("Vars browsing", function() {
     beforeEach(function() {
       browser().navigateTo("/#/clojure.main/with-bindings");
-      sleep(0.3);
+      sleep(0.4);
     });
 
     it("displays the namespace and var in the title", function() {
