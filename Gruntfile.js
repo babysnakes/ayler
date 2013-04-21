@@ -123,6 +123,20 @@ module.exports = function(grunt) {
       },
       makeExec: {
         command: "chmod +x <%= distExecutable %>"
+      },
+      checkoutVendor: {
+        command: "git checkout 973e377 -- vendor && git reset HEAD -- vendor/",
+        options: {
+          stdout: true,
+          stderr: true
+        }
+      },
+      bower: {
+        command: "node_modules/.bin/bower install",
+        options: {
+          stdout: true,
+          stderr: true
+        }
       }
     },
 
@@ -167,6 +181,9 @@ module.exports = function(grunt) {
                      "Service. generates assets automatically upon change.",
                      ['clean', 'less:development',
                       'concat:development', 'uglify:development', 'watch']);
+  grunt.registerTask('vendor',
+                     "Get javascript and css dependencies",
+                     ["shell:bower", "shell:checkoutVendor"]),
   grunt.registerTask('production',
                      "Generate assets for production.",
                      ['clean', 'less:development',

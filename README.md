@@ -39,10 +39,13 @@ Once you have these installed run the following:
 
 * Install required node packages (make take some time):
   * `npm install`
-* Configure your path to use the installed tools:
+* Configure your environment to use the installed `grunt` command.
+  Either one of the below will do:
   * `export PATH=${PWD}/node_modules/.bin:$PATH`
+  * `alias grunt=${PWD}/node_modules/.bin/grunt`
+  * Or just install `grunt-cli` as a global npm package.
 * Install required js/css dependencies (may take some time):
-  * `bower install`
+  * `grunt vendor`
 
 Now, we use the `grunt` command to generate our assets. Here's a list
 of most common invocations:
@@ -69,6 +72,13 @@ in the expected `project.clj`. After changing the version in
     # grunt version
 
 and it will replace the version in all required places.
+
+### A note about dependencies
+Most dependencies are downloaded from the internet by `leiningen`,
+`npm` or `bower`. However some dependencies are not available by these
+tools. I created a *vendor* branch which holds dependencies like
+these. These dependencies are checked out on top of the current brunch
+by running `grunt vendor`.
 
 ## License
 Copyright © 2013 Haim Ashkenazi
