@@ -39,7 +39,8 @@ module.exports = function(grunt) {
           "resources/public/js/dependencies.js": [
             "vendor/jquery/jquery.js",
             "vendor/angular/angular.js",
-            "vendor/bootstrap/docs/assets/js/bootstrap.js"],
+            "vendor/bootstrap/docs/assets/js/bootstrap.js",
+            "vendor/highlight.js/highlight.pack.js"],
           "resources/public/js/angular-scenario.js": [
             "vendor/angular-scenario/angular-scenario.js"],
           "resources/public/js/scenarios.js": [
@@ -51,8 +52,13 @@ module.exports = function(grunt) {
       production: {
         src: ["vendor/jquery/jquery.min.js",
               "vendor/angular/angular.min.js",
-              "vendor/bootstrap/docs/assets/js/bootstrap.min.js"],
+              "vendor/bootstrap/docs/assets/js/bootstrap.min.js",
+              "vendor/highlight.js/highlight.pack.js"],
         dest: "resources/public/js/dependencies.js"
+      },
+      vendorCss: {
+        src: ["vendor/highlight.js/styles/tomorrow.css"],
+        dest: "resources/public/css/dependencies.css"
       }
     },
 
@@ -179,14 +185,14 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default',
                      "Service. generates assets automatically upon change.",
-                     ['clean', 'less:development',
+                     ['clean', 'less:development', "concat:vendorCss",
                       'concat:development', 'uglify:development', 'watch']);
   grunt.registerTask('vendor',
                      "Get javascript and css dependencies",
                      ["shell:bower", "shell:checkoutVendor"]),
   grunt.registerTask('production',
                      "Generate assets for production.",
-                     ['clean', 'less:development',
+                     ['clean', 'less:development', "concat:vendorCss",
                       'uglify:development', 'concat:production']);
   grunt.registerTask('release',
                      "Create a release executable (target/ayler).",

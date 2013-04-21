@@ -195,7 +195,11 @@ function VarInfoCtrl($scope, $routeParams, $http) {
 
   // Handler for var source.
   $scope.handleSource = function(response) {
-    $scope.source = response || "Source not found.";
+    if (response) {
+      $scope.source = hljs.highlight("clojure", response).value
+    } else {
+      $scope.source = "<span>Source not found.</span>"
+    }
   };
 
   // Since currently we display either this controller or the
