@@ -16,7 +16,7 @@
 
 (defroutes app-routes
   (GET "/" _ (anti-forgery-cookie (resource-response "/public/index.html")))
-  (context "/api" [] (var-route api/app))
+  (var-route api/app)
   (route/resources "/")
   (route/not-found "NOT FOUND"))
 

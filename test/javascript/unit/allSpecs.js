@@ -88,8 +88,6 @@ describe("Application: Ayler", function() {
       ctrl = $controller(NamespaceListCtrl, {$scope: scope});
     }));
 
-    });
-
     it("#namespacesHandler assigns namespaces", function() {
       scope.namespacesHandler(nsResponse["response"]);
       expect(scope.namespaces[0]["name"]).toBe("clojure.core");
@@ -112,7 +110,7 @@ describe("Application: Ayler", function() {
 
     beforeEach(inject(function($routeParams, $rootScope, $controller, _$httpBackend_) {
       scope = $rootScope.$new();
-      $routeParams.namespace = "clojure.core";
+      $routeParams.namespace = "hello?";
       scope.handleResponse = function() {};
       scope.loadVars = function() {};
       scope.httpFetch = function() {};
@@ -123,16 +121,16 @@ describe("Application: Ayler", function() {
       ctrl = $controller(NamespaceCtrl, {$scope: scope});
     }));
 
+    it("correctly assigns nsName", function() {
+      expect(scope.nsName).toBe("hello%3F");
+    });
+
     it("resets vars filter when loaded", function() {
       expect(scope.resetVarsFilter).toHaveBeenCalled();
     });
 
     it("sets the title with the correct namespace", function() {
       expect(scope.setTitle).toHaveBeenCalledWith(scope.nsName);
-    });
-
-    it("assigns nsName correctly", function() {
-      expect(scope.nsName).toEqual("clojure.core");
     });
 
     it("handleNsDoc assigns docstring", function() {
@@ -150,8 +148,8 @@ describe("Application: Ayler", function() {
     var $httpBackend;
 
     beforeEach(inject(function($routeParams, $rootScope, $controller, _$httpBackend_) {
-      $routeParams.namespace = "ns";
-      $routeParams.var = "vr";
+      $routeParams.namespace = "ns?";
+      $routeParams.var = "vr?";
       scope = $rootScope.$new();
       scope.httpFetch = function() {};
       scope.setTitle = function() {};
@@ -160,6 +158,11 @@ describe("Application: Ayler", function() {
       scope.handleResponse = function() {};
       ctrl = $controller(VarInfoCtrl, {$scope: scope});
     }));
+
+    it("correctly assigns nsName and varName", function() {
+      expect(scope.nsName).toBe("ns%3F");
+      expect(scope.varName).toBe("vr%3F");
+    });
 
     it("#handleVarDoc handles docs correctly", function() {
       scope.handleVarDoc("hello world");

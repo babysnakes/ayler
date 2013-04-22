@@ -180,7 +180,7 @@ function NamespaceCtrl($scope, $routeParams, $http) {
   };
 
   $scope.nsDocLoading = false; // ngShow flag.
-  $scope.nsName = $routeParams.namespace;
+  $scope.nsName = escape($routeParams.namespace);
   $scope.loadVars($scope.nsName);
   $scope.loadDocstring();
   $scope.resetVarsFilter();
@@ -223,8 +223,8 @@ function VarInfoCtrl($scope, $routeParams, $http) {
     $scope.httpFetch($http, sourceUrl, $scope.sourceLoading, $scope.handleSource);
   };
 
-  $scope.nsName = $routeParams.namespace;
-  $scope.varName = $routeParams.var;
+  $scope.nsName = escape($routeParams.namespace);
+  $scope.varName = escape($routeParams.var);
   $scope.setTitle($scope.nsName + " / " + $scope.varName);
   $scope.loadDocstring();
   $scope.loadSource();
