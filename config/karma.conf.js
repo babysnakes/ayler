@@ -11,7 +11,8 @@ files = [
   "vendor/jquery/jquery.js",
   "vendor/angular/angular.js",
   "vendor/bootstrap/docs/assets/js/bootstrap.js",
-  "vendor/angular-*/*.js",
+  "vendor/angular-mocks/*.js",
+  "vendor/highlight.js/highlight.pack.js",
   'src/javascript/*.js',
   'test/javascript/unit/*.js'
 ];

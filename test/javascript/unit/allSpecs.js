@@ -84,15 +84,10 @@ describe("Application: Ayler", function() {
     beforeEach(inject(function($location, $rootScope, $controller, _$httpBackend_) {
       scope = $rootScope.$new();
       scope.handleResponse = function() {};
-      $httpBackend = _$httpBackend_;
-      $httpBackend.when('GET', "/api/ls").respond(200, nsResponse);
+      scope.httpFetch = function() {};
       ctrl = $controller(NamespaceListCtrl, {$scope: scope});
     }));
 
-    afterEach(function() {
-      $httpBackend.flush();
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
     });
 
     it("#namespacesHandler assigns namespaces", function() {
@@ -120,21 +115,13 @@ describe("Application: Ayler", function() {
       $routeParams.namespace = "clojure.core";
       scope.handleResponse = function() {};
       scope.loadVars = function() {};
+      scope.httpFetch = function() {};
       scope.resetVarsFilter = function() {};
       scope.setTitle = function() {};
       spyOn(scope, "resetVarsFilter");
       spyOn(scope, "setTitle");
-      $httpBackend = _$httpBackend_;
-      $httpBackend.when('GET', "/api/ls").respond(200, '');
-      $httpBackend.when('GET', "/api/doc/clojure.core").respond(200, '');
       ctrl = $controller(NamespaceCtrl, {$scope: scope});
     }));
-
-    afterEach(function() {
-      $httpBackend.flush();
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
 
     it("resets vars filter when loaded", function() {
       expect(scope.resetVarsFilter).toHaveBeenCalled();
@@ -166,19 +153,13 @@ describe("Application: Ayler", function() {
       $routeParams.namespace = "ns";
       $routeParams.var = "vr";
       scope = $rootScope.$new();
+      scope.httpFetch = function() {};
+      scope.setTitle = function() {};
       scope.vars = [];
       scope.loadVars = function() {};
       scope.handleResponse = function() {};
-      $httpBackend = _$httpBackend_;
-      $httpBackend.when('GET', /.*/).respond(200, '');
       ctrl = $controller(VarInfoCtrl, {$scope: scope});
     }));
-
-    afterEach(function() {
-      $httpBackend.flush();
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    });
 
     it("#handleVarDoc handles docs correctly", function() {
       scope.handleVarDoc("hello world");
@@ -192,12 +173,12 @@ describe("Application: Ayler", function() {
 
     it("#handleSource handles source correctly", function() {
       scope.handleSource("(some source)");
-      expect(scope.source).toBe("(some source)");
+      expect(scope.source).toMatch(/\<span class\=/)
     });
 
     it("#handleSource indicates source not found", function() {
       scope.handleSource(null);
-      expect(scope.source).toBe("Source not found.");
+      expect(scope.source).toBe("<span>Source not found.</span>");
     });
 
     it("#refreshVars should reload vars when varlist is empty", function() {
