@@ -110,21 +110,16 @@ function NamespaceListCtrl($scope, $http, $location) {
   };
 
   // Submit the connection form.
-  // TODO: Needs cleanup BAD!
   $scope.connect = function(){
     $http.post("/api/remote/", {
       "port": $scope.remotePort,
       "host": $scope.remoteHost
     }).success(function(data) {
-        $("#connectForm").modal('hide');
-        $location.path("/");
-        // TODO: Ugly hack around reloading the page. How can we do it
-        // nicer?
-        $scope.disconnected = false;
-        $scope.vars = [];
-        $scope.loadNamespaces();
+      $("#connectForm").modal('hide');
+      $location.path("/");
+      $scope.init();
     }).error(function(data, status, headers, config) {
-        $scope.errorHandler(data, status);
+      $scope.errorHandler(data, status);
     });
   };
 
@@ -139,7 +134,6 @@ function NamespaceListCtrl($scope, $http, $location) {
   };
 
   // Reset vars filter. Used when selecting new namespace to display.
-  // TODO: Should be part of a clean procedure?
   $scope.resetVarsFilter = function() {
     $scope.vrs = "";
   };
@@ -161,10 +155,20 @@ function NamespaceListCtrl($scope, $http, $location) {
     $scope.loadNamespaces();
   };
 
-  $scope.vars = []; // Initially empty until loadVars() is triggered;
-  $scope.nsLoading = false; // ngShow flag
-  $scope.varLoading = false; // ngShow flag
-  $scope.loadNamespaces();
+  // Common behavior for execuating on start and on certain refresh
+  // schenarios (e.g. when commiting the connect form).
+  // TODO: Later we should architect this better so we won't need to
+  //       call this function manually.
+  $scope.init = function() {
+    $scope.vars = [] // Initially empty until loadVars() is triggered;
+    $scope.resetVarsFilter();
+    $scope.nsLoading = false;    // ngShow flag
+    $scope.varLoading = false;   // ngShow flag
+    $scope.disconnected = false; // ngShow flag
+    $scope.loadNamespaces();
+  };
+
+  $scope.init();
 };
 
 function NamespaceCtrl($scope, $routeParams, $http) {
