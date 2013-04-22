@@ -90,7 +90,8 @@
        (response (var-doc namespace var)))
   (GET "/api/source/:namespace/:var" [namespace var]
        (response (var-source namespace var)))
-  (POST "/api/remote/" [port host :as request] (set-remote port host)))
+  (POST "/api/remote/" [port host :as request] (set-remote port host))
+  (POST "/api/disconnect/" _ (response (client/disconnect))))
 
 (def app
   (-> routes

@@ -99,9 +99,16 @@ function NamespaceListCtrl($scope, $http, $location) {
     $scope.displayConnectForm();
   });
 
-  $scope.notImplemented = function($event) {
+  $scope.disconnect = function($event) {
     $event.preventDefault();
-    alert("not-implemented!");
+    $http.post("/api/disconnect/")
+      .success(function(data) {
+        $location.path("/");
+        $scope.init();
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorHandler(data, status);
+      })
   };
 
   // Display the connect form modal.
