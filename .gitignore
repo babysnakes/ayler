@@ -12,7 +12,5 @@ pom.xml
 /Procfile
 /tmp/
 /vendor/
-/resources/public/js/*.js
-/resources/public/css/*.css
-/resources/public/test/
+/resources/
 /.emacs.desktop*

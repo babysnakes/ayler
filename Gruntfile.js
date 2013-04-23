@@ -62,9 +62,36 @@ module.exports = function(grunt) {
       }
     },
 
-    clean: ["resources/public/js/*.js",
-            "resources/public/css/*.css",
-            "resources/public/test"],
+    copy: {
+      html: {
+        files: [
+          {
+            expand: true,
+            cwd: "src/html",
+            src: ["**"],
+            dest: "resources/public/"
+          }
+        ]
+      },
+      images: {
+        files: [
+          {
+            expand: true,
+            cwd: "vendor/bootstrap/img/",
+            src: "*",
+            dest: "resources/public/img/"
+          },
+          {
+            expand: true,
+            cwd: "vendor/images/",
+            src: "*",
+            dest: "resources/public/img/"
+          }
+        ]
+      }
+    },
+
+    clean: ["resources"],
 
     karma: {
       unit: {
@@ -131,7 +158,7 @@ module.exports = function(grunt) {
         command: "chmod +x <%= distExecutable %>"
       },
       checkoutVendor: {
-        command: "git checkout 973e377 -- vendor && git reset HEAD -- vendor/",
+        command: "git checkout f709eef -- vendor && git reset HEAD -- vendor/",
         options: {
           stdout: true,
           stderr: true
@@ -179,21 +206,33 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-text-replace');
 
-  grunt.registerTask('default',
-                     "Service. generates assets automatically upon change.",
-                     ['clean', 'less:development', "concat:vendorCss",
-                      'concat:development', 'uglify:development', 'watch']);
   grunt.registerTask('vendor',
                      "Get javascript and css dependencies",
                      ["shell:bower", "shell:checkoutVendor"]),
+  grunt.registerTask('default',
+                     "Service. generates assets automatically upon change.",
+                     ['clean',
+                      "copy:html",
+                      "copy:images",
+                      'less:development',
+                      "concat:vendorCss",
+                      'concat:development',
+                      'uglify:development',
+                      'watch']);
   grunt.registerTask('production',
                      "Generate assets for production.",
-                     ['clean', 'less:development', "concat:vendorCss",
-                      'uglify:development', 'concat:production']);
+                     ['clean',
+                      'copy:html',
+                      "copy:images",
+                      'less:development',
+                      "concat:vendorCss",
+                      'uglify:development',
+                      'concat:production']);
   grunt.registerTask('release',
                      "Create a release executable (target/ayler).",
                      ['production', "shell:uberjar",
