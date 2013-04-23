@@ -13,5 +13,6 @@ pom.xml
 /tmp/
 /vendor/
 /resources/public/js/*.js
-/resources/public/css/app.css
+/resources/public/css/*.css
+/resources/public/test/
 /.emacs.desktop*

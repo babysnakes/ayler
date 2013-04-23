@@ -1,9 +1,10 @@
 (ns ayler.api
   "Handles all API calls."
   (:require [taoensso.timbre :as timbre]
-            [ayler.ns-queries :as queries])
-  (:use [compojure.core :only (defroutes GET)]
-        [ring.middleware.json :only (wrap-json-response)]
+            [ayler.ns-queries :as queries]
+            [ayler.nrepl-client :as client])
+  (:use [compojure.core :only (defroutes GET POST)]
+        [ring.middleware.json :only (wrap-json-response wrap-json-params)]
         [ring.util.response :only (response)]
         [ring.util.codec :only (url-encode url-decode)]))
 
@@ -71,14 +72,28 @@
   (-> (construct-varname namespace var)
       (queries/query-source)))
 
+(defn- set-remote
+  [port host]
+  (if (empty? port)
+    (-> (response "Error! port is required!")
+        (assoc :status 400))
+    (let [host (if (empty? host) "localhost" host)
+          port (Integer. port)]
+      (-> (client/set-remote port host)
+          response))))
+
 (defroutes routes
-  (GET "/ls" _ (response (loaded-namespaces)))
-  (GET "/ls/:namespace" [namespace] (response (ns-vars namespace)))
-  (GET "/doc/:namespace" [namespace] (response (ns-doc namespace)))
-  (GET "/doc/:namespace/:var" [namespace var]
+  (GET "/api/ls" _ (response (loaded-namespaces)))
+  (GET "/api/ls/:namespace" [namespace] (response (ns-vars namespace)))
+  (GET "/api/doc/:namespace" [namespace] (response (ns-doc namespace)))
+  (GET "/api/doc/:namespace/:var" [namespace var]
        (response (var-doc namespace var)))
-  (GET "/source/:namespace/:var" [namespace var]
-       (response (var-source namespace var))))
+  (GET "/api/source/:namespace/:var" [namespace var]
+       (response (var-source namespace var)))
+  (POST "/api/remote/" [port host :as request] (set-remote port host))
+  (POST "/api/disconnect/" _ (response (client/disconnect))))
 
 (def app
-  (wrap-json-response routes))
+  (-> routes
+      wrap-json-response
+      wrap-json-params))

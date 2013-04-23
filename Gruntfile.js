@@ -35,22 +35,36 @@ module.exports = function(grunt) {
     concat: {
       // pretty versions for development
       development: {
-        src: ["vendor/jquery/jquery.js",
-              "vendor/angular/angular.js",
-              "vendor/bootstrap/docs/assets/js/bootstrap.js"],
-        dest: "resources/public/js/dependencies.js"
+        files: {
+          "resources/public/js/dependencies.js": [
+            "vendor/jquery/jquery.js",
+            "vendor/angular/angular.js",
+            "vendor/bootstrap/docs/assets/js/bootstrap.js",
+            "vendor/highlight.js/highlight.pack.js"],
+          "resources/public/js/angular-scenario.js": [
+            "vendor/angular-scenario/angular-scenario.js"],
+          "resources/public/js/scenarios.js": [
+            "test/javascript/e2e/scenarios.js"],
+          "resources/public/test/test.html": ["test/html/e2e.html"]
+        },
       },
       // minified versions for production
       production: {
         src: ["vendor/jquery/jquery.min.js",
               "vendor/angular/angular.min.js",
-              "vendor/bootstrap/docs/assets/js/bootstrap.min.js"],
+              "vendor/bootstrap/docs/assets/js/bootstrap.min.js",
+              "vendor/highlight.js/highlight.pack.js"],
         dest: "resources/public/js/dependencies.js"
+      },
+      vendorCss: {
+        src: ["vendor/highlight.js/styles/tomorrow.css"],
+        dest: "resources/public/css/dependencies.css"
       }
     },
 
     clean: ["resources/public/js/*.js",
-            "resources/public/css/*.css"],
+            "resources/public/css/*.css",
+            "resources/public/test"],
 
     karma: {
       unit: {
@@ -70,8 +84,14 @@ module.exports = function(grunt) {
       deps: {
         files: ["vendor/jquery/jquery.js",
                 "vendor/angular/angular.js",
-                "vendor/bootstrap/docs/assets/js/bootstrap.js"],
-        tasks: ["concat:development"]
+                "vendor/angular-scenario/angular-scenario.js",
+                "vendor/bootstrap/docs/assets/js/bootstrap.js",
+                "test/javascript/e2e/scenarios.js",
+                "test/html/e2e.html"],
+        tasks: ["concat:development"],
+        options: {
+          nospawn: true
+        }
       },
       app: {
         files: "src/javascript/*.js",
@@ -93,7 +113,7 @@ module.exports = function(grunt) {
         options: {
           stdout: true,
           stderr: true
-        },
+        }
       },
       standalone: {
         command: "cp <%= standaloneJar %> <%= distDir %>/ayler-<%= pkg.version %>.jar"
@@ -109,6 +129,20 @@ module.exports = function(grunt) {
       },
       makeExec: {
         command: "chmod +x <%= distExecutable %>"
+      },
+      checkoutVendor: {
+        command: "git checkout 973e377 -- vendor && git reset HEAD -- vendor/",
+        options: {
+          stdout: true,
+          stderr: true
+        }
+      },
+      bower: {
+        command: "node_modules/.bin/bower install",
+        options: {
+          stdout: true,
+          stderr: true
+        }
       }
     },
 
@@ -119,13 +153,21 @@ module.exports = function(grunt) {
         replacements: [{
           from: /(\(defproject ayler ").*("\s*)/,
           to: "$1<%= pkg.version %>$2"
-        }],
+        }]
       },
       component: {
         src: "config/component.json",
         overwrite: true,
         replacements: [{
           from: /("version": ")0.0.0(",\s*)/,
+          to: "$1<%= pkg.version %>$2"
+        }]
+      },
+      version: {
+        src: "src/clojure/ayler/version.clj",
+        overwrite: true,
+        replacements: [{
+          from: /(\(def version ")0.0.0("\))/,
           to: "$1<%= pkg.version %>$2"
         }]
       }
@@ -143,11 +185,14 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default',
                      "Service. generates assets automatically upon change.",
-                     ['clean', 'less:development',
+                     ['clean', 'less:development', "concat:vendorCss",
                       'concat:development', 'uglify:development', 'watch']);
+  grunt.registerTask('vendor',
+                     "Get javascript and css dependencies",
+                     ["shell:bower", "shell:checkoutVendor"]),
   grunt.registerTask('production',
                      "Generate assets for production.",
-                     ['clean', 'less:development',
+                     ['clean', 'less:development', "concat:vendorCss",
                       'uglify:development', 'concat:production']);
   grunt.registerTask('release',
                      "Create a release executable (target/ayler).",
@@ -157,5 +202,5 @@ module.exports = function(grunt) {
                       "shell:standalone"]),
   grunt.registerTask('version',
                      'Update a version according to one specified in package.json',
-                     ["replace:project", "replace:component"])
+                     ["replace:project", "replace:component", "replace:version"]);
 };
