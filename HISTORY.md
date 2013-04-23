@@ -1,5 +1,10 @@
 # Project history
 
+### 0.2.1
+Fixes:
+
+* Fixed version handling.
+
 ### 0.2.0
 Features:
 
