@@ -1,6 +1,6 @@
 {
   "name": "ayler",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "bootstrap": "2.3.1",
     "angular": "~1.0.5",
