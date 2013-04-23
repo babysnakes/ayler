@@ -1,4 +1,4 @@
-(defproject ayler "0.1.0"
+(defproject ayler "0.2.0"
   :description "External namespace browswer for clojure projects."
   ;; :url "http://example.com/FIXME"
   :license {:name "GPLv3"
@@ -11,19 +11,18 @@
                   :exclusions [org.clojure/tools.macro]]
                  [com.taoensso/timbre "1.5.2"]
                  [org.clojure/tools.cli "0.2.2"]
-                 [ring/ring-json "0.2.0"]]
+                 [ring/ring-json "0.2.0"]
+                 [crypto-random "1.1.0"]]
 
+  :source-paths ["src/clojure"]
+  :test-paths ["test/clojure"]
+  
   :profiles {:dev
              {:dependencies [[ring-mock "0.1.3"]]
               :plugins [[lein-pedantic "0.0.5"]]
               :jvm-opts ["-Dayler.dev=t"]}}
 
   :main ayler.app
-  :uberjar-name "ayler-standalone.jar"
-  :uberjar-exclusions [#"^vendor/.*"
-                       #"^assets/.*"
-                       #"^public/.*/.gitkeep"
-                       ;; Avoid isnature errors (caused by exclusions?)
-                       #"(?i)^META-INF/[^/]*\.(SF|RSA)$"]
+
   :pedantic :warn
   :min-lein-version "2.0.0")

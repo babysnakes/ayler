@@ -1,6 +1,6 @@
 {
   "name": "ayler",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "Utilities to help during the development of ayler",
   "dependencies": {
     "bower": "~0.8.5",
@@ -12,6 +12,8 @@
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-karma": "~0.3.0",
-    "grunt-shell": "~0.2.1"
+    "grunt-shell": "~0.2.1",
+    "grunt-text-replace": "~0.3.2",
+    "grunt-contrib-copy": "~0.4.1"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "name": "ayler",
+  "version": "0.2.0-SNAPSHOT",
+  "dependencies": {
+    "bootstrap": "2.3.1",
+    "angular": "~1.0.5",
+    "angular-mocks": "~1.0.5",
+    "angular-scenario": "~1.0.5"
+  }
+}

@@ -1,0 +1,9 @@
+<h2><small>{{nsName}} / {{varName}}</small></h2>
+<h3><small>Docstring</small></h3>
+<img src="img/ajax-loader.gif"/ ng-show="docLoading">
+<pre id="docstring">{{docstring}}</pre>
+<h3><small>Source</small></h3>
+<img src="img/ajax-loader.gif"/ ng-show="sourceLoading">
+<div class="highlighter">
+  <pre id="source" ng-bind-html-unsafe="source"></pre>
+</div>
