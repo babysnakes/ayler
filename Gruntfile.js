@@ -186,7 +186,7 @@ module.exports = function(grunt) {
         src: "config/component.json",
         overwrite: true,
         replacements: [{
-          from: /("version": ")0.0.0(",\s*)/,
+          from: /("version": ").*(",\s*)/,
           to: "$1<%= pkg.version %>$2"
         }]
       },
@@ -194,7 +194,7 @@ module.exports = function(grunt) {
         src: "src/clojure/ayler/version.clj",
         overwrite: true,
         replacements: [{
-          from: /(\(def version ")0.0.0("\))/,
+          from: /(\(def version ").*("\))/,
           to: "$1<%= pkg.version %>$2"
         }]
       }
