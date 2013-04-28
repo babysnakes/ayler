@@ -67,3 +67,20 @@
   [ns]
   (compose-response (pr-str `(ns-publics (symbol ~ns)))
                     publics-response-handler))
+
+(defn query-all-namespaces
+  "A list of all namespaces in classpath"
+  []
+  (let [query (pr-str '(do
+                         (require 'clojure.tools.namespace.find)
+                         (require 'clojure.java.classpath)
+                         (clojure.tools.namespace.find/find-namespaces
+                          (clojure.java.classpath/classpath))))]
+    (compose-response query value-response-handler)))
+
+(defn require-namespace
+  "require namespace on remote nrepl"
+  [namespace]
+  (compose-response (pr-str `(require (quote ~(symbol namespace))))
+                    value-response-handler))
+

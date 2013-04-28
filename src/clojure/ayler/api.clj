@@ -49,6 +49,11 @@
   (-> (queries/query-loaded-namespaces)
       (apply-handler-if-successfull nses-to-name-and-url)))
 
+(defn- all-namespaces
+  []
+  (-> (queries/query-all-namespaces)
+      (apply-handler-if-successfull sort)))
+
 (defn- ns-vars
   "Lists the vars in a namespace"
   [namespace]
@@ -73,6 +78,13 @@
   (-> (construct-varname namespace var)
       (queries/query-source)))
 
+(defn- remote-require
+  [namespace]
+  (timbre/debug (str "require on remote nrepl: " namespace))
+  (-> namespace
+      url-decode
+      queries/require-namespace))
+
 (defn- set-remote
   [port host]
   (if (empty? port)
@@ -85,12 +97,15 @@
 
 (defroutes routes
   (GET "/api/ls" _ (response (loaded-namespaces)))
+  (GET "/api/lsall" _ (response (all-namespaces)))
   (GET "/api/ls/:namespace" [namespace] (response (ns-vars namespace)))
   (GET "/api/doc/:namespace" [namespace] (response (ns-doc namespace)))
   (GET "/api/doc/:namespace/:var" [namespace var]
        (response (var-doc namespace var)))
   (GET "/api/source/:namespace/:var" [namespace var]
        (response (var-source namespace var)))
+  (POST "/api/require/:namespace" [namespace :as request]
+        (response (remote-require namespace)))
   (POST "/api/remote/" [port host :as request] (set-remote port host))
   (POST "/api/disconnect/" _ (response (client/disconnect))))
 

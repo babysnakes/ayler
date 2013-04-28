@@ -11,6 +11,8 @@ pom.xml
 /node_Modules/
 /Procfile
 /tmp/
+/test/project/.*
+/test/project/target/
 /vendor/
 /resources/
 /.emacs.desktop*
