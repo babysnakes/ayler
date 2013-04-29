@@ -166,6 +166,12 @@ function NamespaceListCtrl($scope, $http, $location) {
     $scope.loadNamespaces();
   };
 
+  // Broadcasting message causing the display of the all namespaces
+  // modal.
+  $scope.showAllNsModal = function() {
+    $scope.$broadcast("allNsModal");
+  };
+
   // Common behavior for execuating on start and on certain refresh
   // schenarios (e.g. when commiting the connect form).
   // TODO: Later we should architect this better so we won't need to
@@ -252,4 +258,36 @@ function VarInfoCtrl($scope, $routeParams, $http) {
   $scope.loadDocstring();
   $scope.loadSource();
   $scope.refreshVars();
+};
+
+function AllNsCtrl($scope, $location, $http) {
+  $scope.$on("allNsModal", function() {
+    $scope.loadAllNses();
+    $("#allNsModal").modal("show");
+  });
+
+  // handler for all namespaces response
+  $scope.handleAllNses = function(response) {
+    $scope.allNses = response;
+  };
+
+  $scope.setAllNsesLoading = function(b) {$scope.allNsesLoading = b}; // ng-show
+
+  $scope.loadAllNses = function() {
+    $scope.httpFetch($http, "/api/lsall",
+                     $scope.setAllNsesLoading, $scope.handleAllNses);
+  };
+
+  $scope.selectNsToRequire = function() {
+    var selected = escape($scope.selectedNs);
+    var url = "/api/require/" + selected
+    $http.post(url, {})
+      .success(function(data) {
+        $("#allNsModal").modal("hide");
+        $scope.init();
+        $location.path("/" + selected);
+      })
+      .error(function(data, status, headers, config) {
+        $scope.errorHandler(data, status);
+      });};
 };
