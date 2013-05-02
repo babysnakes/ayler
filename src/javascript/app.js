@@ -269,6 +269,8 @@ function AllNsCtrl($scope, $location, $http) {
   // handler for all namespaces response
   $scope.handleAllNses = function(response) {
     $scope.allNses = response;
+    // avoid null options and reset selection if exists.
+    $scope.selectedNs = response[0];
   };
 
   $scope.setAllNsesLoading = function(b) {$scope.allNsesLoading = b}; // ng-show
@@ -280,7 +282,7 @@ function AllNsCtrl($scope, $location, $http) {
 
   $scope.selectNsToRequire = function() {
     var selected = escape($scope.selectedNs);
-    var url = "/api/require/" + selected
+    var url = "/api/require/" + selected;
     $http.post(url, {})
       .success(function(data) {
         $("#allNsModal").modal("hide");
