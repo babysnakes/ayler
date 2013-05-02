@@ -115,6 +115,14 @@
             your REPL. When submitting you'll see the documentation
             for this namespace.
           </p>
+          <div class="alert alert-block">
+            <h4>Notice!</h4>
+            In order to use this feature you must
+            add <em>org.clojure/tools.namespace</em>
+            and <em>org.clojure/java.classpath</em> to your project
+            dependencies. Otherwise you'll get
+            a <em>FileNotFoundException</em> error.
+          </div>
           <input type="text" class="input-medium" name="nsFilter"
                  placeholder="Filter namespaces" ng-model="nsFilter"/>
           <select class="input-xxlarge" size="8" ng-model="selectedNs"
