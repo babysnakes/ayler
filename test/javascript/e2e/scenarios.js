@@ -95,6 +95,21 @@ describe("Error reporting and dismissal", function() {
   });
 });
 
+describe("all namespaces usage scenario", function() {
+  beforeEach(function() {
+    browser().navigateTo("/");
+  });
+
+  it("default usage", function() {
+    element("#show-all-ns-modal", "search button").click();
+    sleep(0.6);
+    select("selectedNs").option("clojure.zip")
+    element("#allNsModal input[type=submit]").click();
+    sleep(1);
+    expect(browser().location().path()).toBe("/clojure.zip");
+  });
+});
+
 xdescribe("Exceptional cases", function() {
   it("empties the var list when navigating manually from var to '/'");
 });

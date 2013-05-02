@@ -127,6 +127,10 @@ module.exports = function(grunt) {
       karma: {
         files: "test/javascript/unit/*.js",
         tasks: ['karma:unit:run']
+      },
+      html: {
+        files: "src/html/**/*.html",
+        tasks: ["copy:html"]
       }
     },
 
