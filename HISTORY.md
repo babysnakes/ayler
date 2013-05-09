@@ -1,5 +1,10 @@
 # Project history
 
+### 0.3.0
+Features:
+
+* Browse all namespaces in classpath.
+
 ### 0.2.1
 Fixes:
 

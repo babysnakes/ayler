@@ -198,4 +198,18 @@ describe("Application: Ayler", function() {
       expect(scope.loadVars).not.toHaveBeenCalled();
     });
   });
+
+  describe("Controller: AllNsCtrl", function(){
+    beforeEach(inject(function($rootScope, $location, $controller, _$httpBackend_) {
+      scope = $rootScope.$new();
+      scope.httpFetch = function() {};
+      ctrl = $controller(AllNsCtrl, {$scope: scope});
+    }));
+
+    it("#handleAllNses assigns response correctly", function() {
+      response = ["clojure.core", "other.namespace"];
+      scope.handleAllNses(response);
+      expect(scope.allNses).toEqual(response);
+    });
+  });
 });

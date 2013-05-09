@@ -5,6 +5,7 @@ basePath = '../';
 
 
 // list of files / patterns to load in the browser
+// TODO: fix dependencies list so it'll not repeat the list in grunt.
 files = [
   JASMINE,
   JASMINE_ADAPTER,

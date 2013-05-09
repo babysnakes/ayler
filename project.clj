@@ -1,4 +1,4 @@
-(defproject ayler "0.2.1"
+(defproject ayler "0.3.0"
   :description "External namespace browswer for clojure projects."
   ;; :url "http://example.com/FIXME"
   :license {:name "GPLv3"
