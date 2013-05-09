@@ -14,7 +14,7 @@ features are:
   dependencies).
 
 For more information on installing and using this application please
-see the [wiki](/babysnakes/ayler/wiki).
+see the [wiki][gwiki].
 
 ## Development environment setup
 
@@ -85,3 +85,4 @@ Distributed under the GPLv3 license.
 [nrepl]: https://github.com/clojure/tools.nrepl
 [grunt]: http://gruntjs.com
 [clojuredocs]: http://www.clojuredocs.org
+[gwiki]: https://github.com/babysnakes/ayler/wiki
