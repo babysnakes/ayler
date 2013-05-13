@@ -6,7 +6,7 @@
             [ayler.api :as api])
   (:use [compojure.core :only (defroutes GET context)]
         [ayler.helpers :only (var-route)]
-        ayler.middleware.anti-forgery-angular
+        [ring.middleware.anti-forgery :only (wrap-anti-forgery)]
         ayler.utils.anti-forgery))
 
 (defn- render
@@ -23,7 +23,8 @@
 (def pre-app
   "That's the only way I found to be able to hot-reload the custom middlewares :("
   (-> (var-route app-routes)
-      wrap-anti-forgery-angular))
+      (wrap-anti-forgery {:access-denied-response access-denied-response
+                          :request-token-extractor token-header-extractor})))
 
 (def app
   (handler/site (var-route pre-app)))
