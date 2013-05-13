@@ -9,7 +9,6 @@
       (is (thrown? AssertionError (anti-forgery-cookie "hello world"))))
     (testing "regular functionality"
       (let [response (anti-forgery-cookie {:body "" :status 200})]
-        (println response)
         (is (= (get-in response [:cookies "XSRF-TOKEN" :value]) "abcdefg"))))))
 
 (deftest token-extractor-test
