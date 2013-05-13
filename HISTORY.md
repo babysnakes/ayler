@@ -1,4 +1,9 @@
 # Project history
+### 0.4.0
+Fixes:
+
+* Instead of embedding the anti-forgery middleware we use a [custom
+  fork of it][braf]
 
 ### 0.3.0
 Features:
@@ -36,4 +41,4 @@ First release. Features:
 * Remote nrepl is configurable only via CLI options
 
 [ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
-
+[braf]: https://github.com/babysnakes/ring-anti-forgery

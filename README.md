@@ -18,6 +18,25 @@ see the [wiki][gwiki].
 
 ## Development environment setup
 
+### Custom dependencies
+We're using a custom fork of [ring-anti-forgery][]. This fork
+currently only exists in github and I couldn't find an elegant way for
+including github repositories as dependencies when building production
+jar, so currently we require an extra step for installing the fork
+locally on your repository. Later it'll either get accepted as pull
+request or we'll create a custom fork.
+
+Please run the following in order to install it locally:
+
+```sh
+# cd /to/some/directory
+# git clone git://github.com/babysnakes/ring-anti-forgery.git
+# cd ring-anti-forgery
+# git checkout db6d0d9
+# lein install
+# cd .. && rm -rf ring-anti-forgery
+```
+
 ### External dependencies
 This project relies on external applications to manage different parts
 of it's life cycle. You'll need the following applications:
@@ -68,12 +87,12 @@ in the expected `project.clj`. After changing the version in
 
 and it will replace the version in all required places.
 
-### A note about dependencies
-Most dependencies are downloaded from the internet by `leiningen`,
-`npm` or `bower`. However some dependencies are not available by these
-tools. I created a *vendor* branch which holds dependencies like
-these. These dependencies are checked out on top of the current brunch
-by running `grunt vendor`.
+### A note about asset dependencies
+Most asset dependencies are downloaded from the internet by `npm` or
+`bower`. However some dependencies are not available by these tools. I
+created a *vendor* branch which holds dependencies like these. These
+dependencies are checked out on top of the current brunch by running
+`grunt vendor`.
 
 ## License
 Copyright © 2013 Haim Ashkenazi
@@ -86,3 +105,4 @@ Distributed under the GPLv3 license.
 [grunt]: http://gruntjs.com
 [clojuredocs]: http://www.clojuredocs.org
 [gwiki]: https://github.com/babysnakes/ayler/wiki
+[ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
