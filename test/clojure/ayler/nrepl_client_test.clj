@@ -20,11 +20,13 @@
       (is (= out f/disconnected-response)))))
 
 (deftest error-handling
-  (testing "when disconnected, returns a hash with :status => :disconnected"
-    (client/set-remote 1)
-    (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
-      (is (= result {:status :disconnected}))))
-  (testing "when disconnected, returns a hash with :status => :not-connected"
-    (client/disconnect)
-    (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
-      (is (= result {:status :not-connected})))))
+  (with-redefs [client/_remote (atom [])] ;; do not change running configuration.
+    (testing "various _remote states"
+      (testing "when disconnected, returns a hash with :status => :disconnected"
+        (client/set-remote 1 "localhost")
+        (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
+          (is (= result {:status :disconnected}))))
+      (testing "when disconnected, returns a hash with :status => :not-connected"
+        (client/disconnect)
+        (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
+          (is (= result {:status :not-connected})))))))
