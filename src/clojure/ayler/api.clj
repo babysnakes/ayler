@@ -6,8 +6,7 @@
   (:use [compojure.core :only (defroutes GET POST)]
         [ring.middleware.json :only (wrap-json-response wrap-json-params)]
         [ring.util.response :only (response)]
-        [ring.util.codec :only (url-encode url-decode)]
-        [ayler.helpers :only (var-route)]))
+        [ring.util.codec :only (url-encode url-decode)]))
 
 (defn- convert-to-name-and-url
   [col f]
@@ -110,6 +109,6 @@
   (POST "/api/disconnect/" _ (response (client/disconnect))))
 
 (def app
-  (-> (var-route routes)
+  (-> routes
       wrap-json-response
       wrap-json-params))

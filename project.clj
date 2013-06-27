@@ -18,8 +18,7 @@
   :test-paths ["test/clojure"]
   
   :profiles {:dev
-             {:dependencies [[ring-mock "0.1.5"]]
-              :jvm-opts ["-Dayler.dev=t"]}}
+             {:dependencies [[ring-mock "0.1.5"]]}}
 
   :main ayler.app
 
