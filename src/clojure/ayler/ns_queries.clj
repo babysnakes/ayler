@@ -9,8 +9,7 @@
   * :response - In case of :done status this is the required response.
                 In case of :error status this is the error message.
                 Otherwise nil."
-  (:require ayler.test-helpers
-            [ayler.nrepl-client :as client]
+  (:require [ayler.nrepl-client :as client]
             [taoensso.timbre :as timbre]))
 
 (defn- generic-response-parser
