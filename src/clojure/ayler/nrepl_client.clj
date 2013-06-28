@@ -7,10 +7,15 @@
 
 (defn set-remote
   "Set the host and port of the remote address"
-  ([port] (set-remote port "localhost"))
-  ([port host]
-     (reset! _remote [:port port :host host])
-     (timbre/debug (str "Remote is: " @_remote))))
+  [port host]
+  (reset! _remote [:port port :host host])
+  (timbre/debug (str "Remote is: " @_remote)))
+
+(defn extract-remote
+  "Returns the remote's settings."
+  []
+  (let [[_ port _ host] @_remote]
+    (when (and port host) [port host])))
 
 (defn disconnect
   "disconnect from server"

@@ -41,8 +41,8 @@ Please run the following in order to install it locally:
 This project relies on external applications to manage different parts
 of it's life cycle. You'll need the following applications:
 
-* [Nodejs][node] (currently 0.8.x)
-* [phantomjs][pjs] (currently 1.8.x)
+* [Nodejs][node] (currently 0.10.7)
+* [phantomjs][pjs] (currently 1.9.x)
 
 Once you have these installed run the following:
 
@@ -78,7 +78,7 @@ life cycle of a project. You can find the full configuration in the
 During development it's advisable to run `grunt` on one terminal and
 `grung karme:unit` on another.
 
-### Managing versions
+### Managing application version
 The application version should be configured in `package.json` and not
 in the expected `project.clj`. After changing the version in
 `package.json` run (see above about *grunt*):
@@ -86,6 +86,26 @@ in the expected `project.clj`. After changing the version in
     # grunt version
 
 and it will replace the version in all required places.
+
+### Querying outdated dependencies
+There are tools to query outdated dependencies (both for assets and
+for clojure dependencies).
+
+Clojure outdated dependencies could be queried using the
+[lein-outdated][] plugin.
+
+Node outdated packages could be queried in 2 ways:
+
+* Query for updates within the boundaries of your version constraint
+  (e.g. if you specified ~1.2.0 as version you will not be shown
+  version 1.3):
+  * `npm outdated`
+* Query for updated regardless of version constraints:
+  * `npmedge`
+
+And last, for a list of outdated assets just run `bower list`. The
+up-to-date version should be specified alongside the existing
+version.
 
 ### A note about asset dependencies
 Most asset dependencies are downloaded from the internet by `npm` or
@@ -106,3 +126,4 @@ Distributed under the GPLv3 license.
 [clojuredocs]: http://www.clojuredocs.org
 [gwiki]: https://github.com/babysnakes/ayler/wiki
 [ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
+[lein-outdated]: https://github.com/ato/lein-outdated

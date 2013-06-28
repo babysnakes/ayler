@@ -1,7 +1,7 @@
 (ns ayler.ns-queries-test
-  (:require [ayler.ns-queries :as q]
-            [ayler.fixtures :as f])
-  (:use clojure.test))
+  (:require [ayler.fixtures :as f]
+            [ayler.ns-queries :as q]
+            [clojure.test :refer (deftest testing is)]))
 
 (deftest generic-reponse-parsing
   (testing "when remote command didn't run, just return the status"

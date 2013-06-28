@@ -1,13 +1,12 @@
 (ns ayler.api
   "Handles all API calls."
-  (:require [taoensso.timbre :as timbre]
-            [ayler.ns-queries :as queries]
-            [ayler.nrepl-client :as client])
-  (:use [compojure.core :only (defroutes GET POST)]
-        [ring.middleware.json :only (wrap-json-response wrap-json-params)]
-        [ring.util.response :only (response)]
-        [ring.util.codec :only (url-encode url-decode)]
-        [ayler.helpers :only (var-route)]))
+  (:require [ayler.ns-queries :as queries]
+            [ayler.nrepl-client :as client]
+            [compojure.core :refer (defroutes GET POST)]
+            [ring.middleware.json :refer (wrap-json-response wrap-json-params)]
+            [ring.util.codec :refer (url-encode url-decode)]
+            [ring.util.response :refer (response)]
+            [taoensso.timbre :as timbre]))
 
 (defn- convert-to-name-and-url
   [col f]
@@ -110,6 +109,6 @@
   (POST "/api/disconnect/" _ (response (client/disconnect))))
 
 (def app
-  (-> (var-route routes)
+  (-> routes
       wrap-json-response
       wrap-json-params))

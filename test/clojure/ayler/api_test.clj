@@ -1,7 +1,7 @@
 (ns ayler.api-test
   (:require [ayler.api :as api]
-            [ayler.nrepl-client :as nclient])
-  (:use clojure.test))
+            [ayler.nrepl-client :as nclient]
+            [clojure.test :refer (deftest testing is)]))
 
 (deftest nses-to-name-and-url
   (testing "when input is nil"

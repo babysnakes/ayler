@@ -1,10 +1,10 @@
 (ns ayler.app
-  (:require [taoensso.timbre :as timbre]
-            [ayler.nrepl-client :as client])
-  (:use [ayler.webapp :only (app)]
-        [ring.adapter.jetty :only (run-jetty)]
-        [clojure.tools.cli :only (cli)]
-        ayler.version)
+  (:require [ayler.nrepl-client :as client]
+            ayler.version
+            [ayler.webapp :refer (app)]
+            [clojure.tools.cli :refer (cli)]
+            [ring.adapter.jetty :refer (run-jetty)]
+            [taoensso.timbre :as timbre])
   (:gen-class))
 
 (def app-args
@@ -16,12 +16,30 @@
    ["-l" "--level" "log level (warn info debug trace)" :parse-fn keyword]
    ["-h" "--help" "show this message"]])
 
-(defn run-server
-  "Start the jetty server"
-  ([] (run-server {}))
-  ([options]
-     (let [opts (merge {:port 5000 :join? false} options)]
-       (defonce server (run-jetty app opts)))))
+(defn system
+  "Returns a new instance of the application."
+  []
+  {:settings {:port 5000 :join? true}})
+
+(defn start
+  "Start all components of the application. Returns the updates system."
+  [system]
+  (when-let [remote (:remote system)]
+    (apply client/set-remote remote))
+  (when-let [level (:log-level system)]
+    (timbre/set-level! level))
+  (if-let [server (:server system)]
+    (do
+      (.start server)
+      system)
+    (assoc system :server (run-jetty app (:settings system)))))
+
+(defn stop
+  "Stops all components of the application. Returns the updated system."
+  [system]
+  (when-let [server (:server system)]
+    (.stop server))
+  (assoc system :remote (client/extract-remote)))
 
 (defn -main
   "All starts here"
@@ -31,15 +49,16 @@
                                     (println (str "Error: " (.getMessage e)))
                                     (println "run with -h for usage.")
                                     (System/exit 0)))
-        options (merge {:join? true} (select-keys arguments [:port]))]
+        {:keys [port level P H]} arguments
+        system (system)]
     (when (contains? arguments :help)
       (println banner)
       (System/exit 0))
     (when (contains? arguments :version)
-      (println (str "Ayler " version))
+      (println (str "Ayler " ayler.version/version))
       (System/exit 0))
-    (when (contains? arguments :level)
-      (timbre/set-level! (:level arguments)))
-    (when (contains? arguments :P)
-      (client/set-remote (:P arguments) (:H arguments)))
-    (run-server options)))
+    (-> system
+        (#(if level (assoc % :log-level level) %))
+        (#(if P (assoc % :remote [P H]) %))
+        (#(if port (assoc-in % [:settings :port] port) %))
+        start)))
