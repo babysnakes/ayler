@@ -17,8 +17,10 @@
   :source-paths ["src/clojure"]
   :test-paths ["test/clojure"]
   
-  :profiles {:dev
-             {:dependencies [[ring-mock "0.1.5"]]}}
+  :profiles {:dev {:source-paths ["src/dev"]
+                   :dependencies [[ring-mock "0.1.5"]
+                                  [org.clojure/tools.namespace "0.2.3"]
+                                  [org.clojure/java.classpath "0.2.0"]]}}
 
   :main ayler.app
 

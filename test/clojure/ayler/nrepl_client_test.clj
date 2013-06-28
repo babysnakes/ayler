@@ -30,3 +30,11 @@
         (client/disconnect)
         (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
           (is (= result {:status :not-connected})))))))
+
+(deftest extract-remote
+  (testing "extract real values from _remote"
+    (with-redefs [client/_remote (atom [:port 2000 :host "localhost"])]
+      (is (= (client/extract-remote) [2000 "localhost"]))))
+  (testing "returns null if port/host not configured"
+    (with-redefs [client/_remote (atom [])]
+      (is (nil? (client/extract-remote))))))
