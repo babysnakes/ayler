@@ -1,6 +1,6 @@
 (ns ayler.utils.anti-forgery
-  (:use [ring.middleware.anti-forgery :only (*anti-forgery-token*)]
-        [ring.util.codec :only (url-decode)]))
+  (:require [ring.middleware.anti-forgery :refer (*anti-forgery-token*)]
+            [ring.util.codec :refer (url-decode)]))
 
 (defn anti-forgery-cookie
   "Adds a cookie with and anti-forgery-token as it's value to the

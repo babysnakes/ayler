@@ -1,12 +1,12 @@
 (ns ayler.webapp
   "The webapp"
-  (:require [ring.util.response :refer (resource-response)]
-            [compojure.route :as route]
+  (:require [ayler.api :as api]
+            [ayler.utils.anti-forgery :refer :all]
+            [compojure.core :refer (defroutes GET context)]
             [compojure.handler :as handler]
-            [ayler.api :as api])
-  (:use [compojure.core :only (defroutes GET context)]
-        [ring.middleware.anti-forgery :only (wrap-anti-forgery)]
-        ayler.utils.anti-forgery))
+            [compojure.route :as route]
+            [ring.middleware.anti-forgery :refer (wrap-anti-forgery)]
+            [ring.util.response :refer (resource-response)]))
 
 (defn- render
   "convert the output of various enlive functions to string"

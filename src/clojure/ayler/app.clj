@@ -1,10 +1,10 @@
 (ns ayler.app
-  (:require [taoensso.timbre :as timbre]
-            [ayler.nrepl-client :as client]
-            ayler.version)
-  (:use [ayler.webapp :only (app)]
-        [ring.adapter.jetty :only (run-jetty)]
-        [clojure.tools.cli :only (cli)])
+  (:require [ayler.nrepl-client :as client]
+            ayler.version
+            [ayler.webapp :refer (app)]
+            [clojure.tools.cli :refer (cli)]
+            [ring.adapter.jetty :refer (run-jetty)]
+            [taoensso.timbre :as timbre])
   (:gen-class))
 
 (def app-args

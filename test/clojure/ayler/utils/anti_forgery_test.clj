@@ -1,7 +1,7 @@
 (ns ayler.utils.anti-forgery-test
-  (:require [ring.middleware.anti-forgery])
-  (:use clojure.test
-        ayler.utils.anti-forgery))
+  (:require [ayler.utils.anti-forgery :refer :all]
+            [clojure.test :refer (deftest testing is)]
+            [ring.middleware.anti-forgery]))
 
 (deftest anti-forgery-cookie-test
   (with-redefs [ring.middleware.anti-forgery/*anti-forgery-token* "abcdefg"]

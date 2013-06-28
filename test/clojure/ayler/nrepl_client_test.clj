@@ -1,8 +1,8 @@
 (ns ayler.nrepl-client-test
-  (:require ayler.test-helpers
-   [ayler.nrepl-client :as client]
-   [ayler.fixtures :as f])
-  (:use clojure.test))
+  (:require [ayler.fixtures :as f]
+            [ayler.nrepl-client :as client]
+            ayler.test-helpers
+            [clojure.test :refer (deftest testing is)]))
 
 (deftest parsing-response
   (testing "when remote call returns correct"
