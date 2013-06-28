@@ -4,6 +4,7 @@ Fixes:
 
 * Instead of embedding the anti-forgery middleware we use a [custom
   fork of it][braf]
+* Revised [clojure workflow][workflow].
 
 ### 0.3.0
 Features:
@@ -42,3 +43,4 @@ First release. Features:
 
 [ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
 [braf]: https://github.com/babysnakes/ring-anti-forgery
+[workflow]: http://thinkrelevance.com/blog/2013/06/04/clojure-workflow-reloaded
