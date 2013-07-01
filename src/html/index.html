@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  ng-app="ayler" ng-controller="MainCtrl">
+<html>
   <head>
     <link rel="stylesheet" href="/css/dependencies.css" type="text/css" />
     <link rel="stylesheet" href="/css/app.css" type="text/css" />
@@ -7,7 +7,7 @@
     <script src="/js/app.js"></script>
     <title>Ayler{{title}}</title>
   </head>
-  <body ng-controller="NamespaceListCtrl">
+  <body>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -15,19 +15,19 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" ng-click="showAllNsModal()" id="show-all-ns-modal">
+              <a  href="#" id="show-all-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
-              <a href="#" ng-click="refreshClicked($event)">
+              <a href="#">
                 <i class="icon-refresh" title="Refresh namespaces"></i>
               </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
-              <a href="#" ng-click="disconnect($event)">
+              <a href="#">
                 <i class="icon-off" title="Disconnect"></i>
               </a>
             </li>
@@ -36,12 +36,12 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-block alert-error" id="errors" ng-show="anyErrors">
+      <div class="alert alert-block alert-error" id="errors">
         <p><strong>Error(s):</strong></p>
         <ul>
-          <li ng-repeat="error in errors">{{error}}</li>
+          <li>{{error}}</li>
         </ul>
-        <button class="btn" type="button" ng-click="clearErrors()">
+        <button class="btn" type="button">
           Dismiss
         </button>
       </div>
@@ -50,53 +50,53 @@
           <div class="filter">
             <form class="form-search span3">
               <input type="text" class="input-medium search-query" name="nses"
-                     placeholder="Filter namespaces" ng-model="nses"/>
+                     placeholder="Filter namespaces"/>
             </form>
-            <img src="img/ajax-loader.gif" ng-show="nsLoading">
+            <img src="img/ajax-loader.gif">
           </div>
         </div>
         <div class="container span6">
           <div class="filter">
             <form class="form-search span3">
               <input type="text" class="input-medium search-query" name="vrs"
-                     placeholder="Filter vars" ng-model="vrs"/>
+                     placeholder="Filter vars"/>
             </form>
-            <img src="img/ajax-loader.gif"/ ng-show="varLoading">
+            <img src="img/ajax-loader.gif">
           </div>
         </div>
       </div>
       <div class="container span6 list-window nses-window">
         <ul>
-          <li ng-repeat="ns in namespaces | filter:nses">
-            <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
+          <li>
+            <a>{{ns.name}}</a>
           </li>
         </ul>
       </div>
       <div class="container span6 list-window vrs-window">
         <ul>
-          <li ng-repeat="var in vars | filter:vrs">
-            <a ng-href="#/{{var.url}}">{{var.name}}</a>
+          <li>
+            <a>{{var.name}}</a>
           </li>
         </ul>
       </div>
-      <div ng-view></div>
+      <!-- <div ng-view></div> -->
     </div>
     <div id="connectForm" class="modal hide fade">
       <div class="modal-header">
         <h3>Connect to remote nrepl</h3>
       </div>
-      <div ng-show="disconnected" class="alert alert-error">
+      <div class="alert alert-error">
         You seem to be disconnected from the nrepl server. Please
         reconnect!
       </div>
-      <form ng-submit="connect()">
+      <form>
         <div class="modal-body">
           <!-- Insert error here -->
           <label>Host</label>
           <input type="text" placeholder="Default: Localhost"
-                 ng-model="remoteHost" name="port" />
+                 name="port" />
           <label>Port</label>
-          <input type="text" ng-model="remotePort" name="host" />
+          <input type="text" name="host" />
         </div>
         <div class="modal-footer">
           <input type="submit" id="submit" value="Submit"
@@ -104,11 +104,11 @@
         </div>
       </form>
     </div>
-    <div id="allNsModal" class="modal hide fade" ng-controller="AllNsCtrl">
+    <div id="allNsModal" class="modal hide fade">
       <div class="modal-header">
         <h3>All namespaces in classpath</h3>
       </div>
-      <form ng-submit="selectNsToRequire()">
+      <form>
         <div class="modal-body">
           <p>
             Select a namespace from the list below to be loaded into
@@ -124,9 +124,8 @@
             a <em>FileNotFoundException</em> error.
           </div>
           <input type="text" class="input-medium" name="nsFilter"
-                 placeholder="Filter namespaces" ng-model="nsFilter"/>
-          <select class="input-xxlarge" size="8" ng-model="selectedNs"
-                  ng-options="ns for ns in allNses | filter:nsFilter"></select>
+                 placeholder="Filter namespaces" />
+          <select class="input-xxlarge" size="8"></select>
         </div>
         <div class="modal-footer">
           <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
