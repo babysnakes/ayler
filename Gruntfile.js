@@ -95,7 +95,8 @@ module.exports = function(grunt) {
 
     karma: {
       unit: {
-        configFile: "config/karma.conf.js"
+        configFile: "config/karma.conf.js",
+        background: true
       }
     },
 
@@ -227,6 +228,7 @@ module.exports = function(grunt) {
                       "concat:vendorCss",
                       'concat:development',
                       'uglify:development',
+                      'karma:unit',
                       'watch']);
   grunt.registerTask('production',
                      "Generate assets for production.",
