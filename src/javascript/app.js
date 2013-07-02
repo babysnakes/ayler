@@ -5,6 +5,137 @@ $(document).ready(function() {
   $("ul.nav i").tooltip({placement: "bottom"});
 });
 
+var aylerApp = angular.module("ayler", []);
+
+aylerApp.config(function($routeProvider) {
+  // Note: the routes use whitespace for template because without
+  // template the controller doesn't run. We don't need the template
+  // itself. We just need the controller to change the state.
+  $routeProvider
+    .when("/",
+          {template: " ",
+           controller: "NsListCtrl"})
+    .when("/:namespace",
+          {template: " ",
+           controller: "NsViewCtrl"})
+    .when("/:namespace/:var",
+          {template: " ",
+           controller: "VarViewCtrl"});
+});
+
+// This will hold all the
+aylerApp.factory("State", function() {
+  var state = {
+    nsList: [],
+    varList: [],
+    errors: [],
+    doc: undefined,   // ns or var docstring
+    source: undefined // var source
+  };
+
+  // Sets the page title (with constant prefix).
+  state.setTitle = function(text) {
+    if (text) {
+      state.title = "Ayler: " + text;
+    } else {
+      state.title = "Ayler";
+    }
+  };
+
+  state.setNsList = function(nslist) {
+    state.nsList = _.map(nslist, function(ns) {
+      return {name: ns, url: escape(ns)};
+    });
+  };
+
+  return state;
+});
+
+aylerApp.factory("ApiClient", function(State, $http) {
+  var apiClient = {};
+
+  apiClient.handleError = function(data, status) {
+    if (status === undefined) {
+      State.errors.push(data);
+    } else if (status === 403) { // anti-forgery expired
+      State.errors.push("Your session has expired. Please refresh the browser.");
+    } else {
+      State.errors.push(data + " (status: " + status + ")");
+    };
+  };
+
+  // Handles the response according to it's "status" attribute.
+  //
+  // params:
+  // * response: object with "status" and "response" attributes.
+  // * handler: A function which handles the response (e.g. set the
+  //            matching attribute on State) in case the status is
+  //            'done'. Receives the response as sole parameter.
+  apiClient.handleResponse = function(response, handler) {
+    switch(response.status) {
+    case "done":
+      handler(response.response);
+      break;
+    case "error":
+      apiClient.handleError(response.response);
+      break;
+    default:
+      alert("Unknown response: " + response);
+      break;
+    };
+  };
+
+  // Wrapper for $http.get.
+  //
+  // params:
+  // * url: The url to fetch.
+  // * flag: The attribute on 'State' to set as true while in
+  //         progress.
+  // * handler: A handler to be passsed to 'handleResponse' when
+  //            successfull. See 'handleResponse' for details.
+  apiClient.httpGet = function(url, flag, handler) {
+    State[flag] = true;
+    $http.get(url)
+      .success(function(data) {
+        State[flag] = undefined;
+        apiClient.handleResponse(data, handler);
+      })
+      .error(function(data, status, headers, config) {
+        State[flag] = undefined;
+        apiClient.handleError(data, status);
+      });
+  };
+
+  return apiClient;
+});
+
+aylerApp.controller("MainCtrl", function($scope, State) {
+  $scope.state = State;
+});
+
+// Configure the state for listing namespaces.
+aylerApp.controller("NsListCtrl", function($scope, State, ApiClient) {
+  $scope.state = State;
+  State.varList = [];
+  State.doc = undefined;
+  State.source = undefined;
+  ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+});
+
+// Configure the state for displaying namespace.
+aylerApp.controller("NsViewCtrl", function($scope, State) {
+  $scope.state = State;
+  State.source = undefined;
+  State.doc = "test";
+  // TODO: set the varlist and doc!
+});
+
+// Configure the state for displaying var.
+aylerApp.controller("VarViewCtrl", function($scope, State) {
+  $scope.state = State;
+  // TODO: set varlist, doc and
+});
+
 // angular.module('ayler', [])
 //   .config(["$routeProvider", function($routeProvider) {
 //     $routeProvider

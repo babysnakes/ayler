@@ -1,3 +1,77 @@
+describe("State service", function() {
+  beforeEach(function() {
+    module("ayler");
+  });
+
+  describe("#setTitle", function() {
+    it("sets the title to 'Ayler' when no title given", inject(function(State) {
+      State.setTitle();
+      expect(State.title).toEqual("Ayler");
+    }));
+
+    it("prefix the provided title with 'Ayler: ", inject(function(State) {
+      State.setTitle("my name");
+      expect(State.title).toEqual("Ayler: my name");
+    }));
+  });
+
+  describe("#setNsList", function() {
+    it("converts each namespace to name and url", inject(function(State) {
+      State.setNsList(["me<"]);
+      expect(State.nsList).toContain({name: "me<", url: "me%3C"});
+    }));
+  });
+});
+
+describe("ApiClient Service", function() {
+  var state, target, http;
+
+  beforeEach(function() {
+    module("ayler");
+    inject(function(State, $http) {
+      state = State;
+      http = $http;
+    });
+    inject(function(ApiClient) {target = ApiClient;});
+  });
+
+  describe("#handleError", function() {
+    it("adds the error when no status provided.", function() {
+      target.handleError("myerror");
+      expect(state.errors[0]).toEqual("myerror");
+    });
+
+    it("indicates csrf error on status 403", function() {
+      target.handleError("some error", 403);
+      expect(state.errors[0]).toMatch(/expired/);
+    });
+
+    it("shows the status if provided", function() {
+      target.handleError("some error", 500);
+      expect(state.errors[0]).toMatch(/some error/);
+      expect(state.errors[0]).toMatch(/status: 500/);
+    });
+  });
+
+  describe("#handleResponse", function() {
+    it("calls the provided handler on status: done", function() {
+      var response = {status: "done", response: ["one"]};
+      var handler = function(input) { state.nsList = input; };
+      target.handleResponse(response, handler);
+      expect(state.nsList).toEqual(["one"]);
+    });
+
+    it("adds the response to the error list if status is error", function() {
+      var response = {status: "error", "response": "ERROR"};
+      target.handleResponse(response, "doc");
+      expect(state.doc).toBeFalsy();
+      expect(state.errors).toContain("ERROR");
+    });
+
+    // TODO: Test the default alert
+  });
+});
+
 // describe("Application: Ayler", function() {
 //   var ctrl, scope;
 

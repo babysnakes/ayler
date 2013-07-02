@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="ayler" ng-controller="MainCtrl">
   <head>
     <link rel="stylesheet" href="/css/dependencies.css" type="text/css" />
     <link rel="stylesheet" href="/css/app.css" type="text/css" />
     <script src="/js/dependencies.js"></script>
     <script src="/js/app.js"></script>
-    <title>Ayler{{title}}</title>
+    <title>{{title}}</title>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
@@ -36,7 +36,8 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-block alert-error" id="errors">
+      <div class="alert alert-block alert-error" id="errors"
+           ng-show="state.errors[0]">
         <p><strong>Error(s):</strong></p>
         <ul>
           <li>{{error}}</li>
@@ -50,9 +51,9 @@
           <div class="filter">
             <form class="form-search span3">
               <input type="text" class="input-medium search-query" name="nses"
-                     placeholder="Filter namespaces"/>
+                     placeholder="Filter namespaces" ng-model="nses"/>
             </form>
-            <img src="img/ajax-loader.gif">
+            <img src="img/ajax-loader.gif" ng-show="state.nsListBusy">
           </div>
         </div>
         <div class="container span6">
@@ -67,8 +68,8 @@
       </div>
       <div class="container span6 list-window nses-window">
         <ul>
-          <li>
-            <a>{{ns.name}}</a>
+          <li ng-repeat="ns in state.nsList | filter:nses">
+            <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
           </li>
         </ul>
       </div>
@@ -79,7 +80,10 @@
           </li>
         </ul>
       </div>
-      <!-- <div ng-view></div> -->
+      <div ng-show="state.doc">
+        <p>hello: {{ state.doc }}</p>
+      </div>
+      <div ng-view></div> <!-- Do not remove this line! -->
     </div>
     <div id="connectForm" class="modal hide fade">
       <div class="modal-header">
