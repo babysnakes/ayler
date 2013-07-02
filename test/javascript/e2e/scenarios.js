@@ -10,7 +10,7 @@ describe("Regular workflow", function() {
     });
 
     it("fetches namespaces list on '/'", function() {
-      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(0);
+      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(2);
     });
 
     it("offers namespace filtering", function() {
@@ -30,7 +30,7 @@ describe("Regular workflow", function() {
     });
 
     it("displays the var list", function() {
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(1);
     });
 
     it("displays something as docstring", function() {
@@ -61,8 +61,8 @@ describe("Regular workflow", function() {
     });
 
     it("displays namespaces and vars list", function() {
-      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(0);
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(1);
+      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(1);
     });
 
     it("displays the docustring", function() {
