@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     distDir: "target/dist",
-    standaloneJar: "target/ayler-<%= pkg.version %>-standalone.jar",
+    standaloneJar: "target/production+uberjar/ayler-<%= pkg.version %>-standalone.jar",
     distExecutable: "<%= distDir %>/ayler-<%= pkg.version %>",
 
     less: {
