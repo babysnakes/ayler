@@ -3,7 +3,7 @@
   "version": "0.4.0-SNAPSHOT",
   "description": "Utilities to help during the development of ayler",
   "dependencies": {
-    "bower": "~0.9.0",
+    "bower": "~0.10.0",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",
     "grunt-contrib-less": "~0.6.0",

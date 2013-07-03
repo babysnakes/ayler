@@ -16,12 +16,13 @@
 
   :source-paths ["src/clojure"]
   :test-paths ["test/clojure"]
-  
+
   :profiles {:dev {:source-paths ["src/dev"]
                    :dependencies [[ring-mock "0.1.5"]
                                   [org.clojure/tools.namespace "0.2.3"]
-                                  [org.clojure/java.classpath "0.2.0"]]}}
+                                  [org.clojure/java.classpath "0.2.0"]]}
+             :production {:main ayler.app}}
 
-  :main ayler.app
+  :main ^{:skip-aot true} ayler.app ; avoid issues with tools.namespace.
 
   :min-lein-version "2.2.0")
