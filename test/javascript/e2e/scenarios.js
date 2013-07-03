@@ -38,14 +38,14 @@ describe("Regular workflow", function() {
     });
 
     it("offers vars filtering", function() {
-      input("vrs").enter("abcdefg");
+      input("state.vrs").enter("abcdefg");
       expect(repeater(".vrs-window li", "vars").count()).toBe(0);
     });
 
     it("cleans up vars filtering upon naviation to new namespace", function() {
-      input("vrs").enter("abcdeflkjsde");
-      browser().navigateTo("/#/clojure.main");
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      input("state.vrs").enter("abcdeflkjsde");
+      element("[href='#/clojure.main']", "clojure.main").click();
+      expect(element("[name='vrs']").val()).toEqual("");
     });
   });
 
@@ -84,6 +84,7 @@ describe("Error reporting and dismissal", function() {
   it("displays the errors when evailable", function() {
     browser().navigateTo("/#/hello-world");
     expect(element("#errors").css("display")).toBe("block");
+    expect(element("#errors li").text()).toMatch(/hello-world/);
   });
 
   it("hides and deletes existing errors when clicking 'Dissmiss'", function() {
