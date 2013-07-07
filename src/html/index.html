@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/css/app.css" type="text/css" />
     <script src="/js/dependencies.js"></script>
     <script src="/js/app.js"></script>
-    <title>{{title}}</title>
+    <title>{{state.title}}</title>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
@@ -60,9 +60,9 @@
           <div class="filter">
             <form class="form-search span3">
               <input type="text" class="input-medium search-query" name="vrs"
-                     placeholder="Filter vars"/>
+                     placeholder="Filter vars" ng-model="state.vrs"/>
             </form>
-            <img src="img/ajax-loader.gif">
+            <img src="img/ajax-loader.gif" ng-show="state.varListBusy">
           </div>
         </div>
       </div>
@@ -75,14 +75,18 @@
       </div>
       <div class="container span6 list-window vrs-window">
         <ul>
-          <li>
-            <a>{{var.name}}</a>
+          <li ng-repeat="var in state.varList | filter:state.vrs">
+            <a ng-href="#/{{var.url}}">{{var.name}}</a>
           </li>
         </ul>
       </div>
-      <div ng-show="state.doc">
-        <p>hello: {{ state.doc }}</p>
+      <h2 ns-show="state.symbolName"><small>{{state.symbolName}}</small></h2>
+      <div ng-show="state.displayDoc">
+        <h3><small>Docstring</small></h3>
+        <img src="img/ajax-loader.gif"/ ng-show="state.docBusy">
+        <pre id="docstring">{{state.doc}}</pre>
       </div>
+      <div ng-show="State.displaySource">{{state.source}}</div>
       <div ng-view></div> <!-- Do not remove this line! -->
     </div>
     <div id="connectForm" class="modal hide fade">

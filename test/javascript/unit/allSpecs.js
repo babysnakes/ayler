@@ -20,6 +20,35 @@ describe("State service", function() {
       State.setNsList(["me<"]);
       expect(State.nsList).toContain({name: "me<", url: "me%3C"});
     }));
+
+    describe("#setDoc", function() {
+      it("populates the doc", inject(function(State) {
+        State.setDoc("some doc");
+        expect(State.doc).toEqual("some doc");
+      }));
+
+      it("indicates when no doc was found", inject(function(State) {
+        State.setDoc(null);
+        expect(State.doc).toEqual("No Namespace Doc.");
+      }));
+    });
+  });
+
+  describe("#setVarList", function() {
+    var state;
+
+    beforeEach(inject(function(State) {
+      state = State;
+      state.setVarList(["me<"], "core:one");
+    }));
+
+    it("sets the varList name with unescaped value", function() {
+      expect(_.first(state.varList).name).toEqual("me<");
+    });
+
+    it("adds the namespace to the url and escapes it all", function() {
+      expect(_.first(state.varList).url).toEqual("core%3Aone/me%3C");
+    });
   });
 });
 
@@ -72,218 +101,100 @@ describe("ApiClient Service", function() {
   });
 });
 
-// describe("Application: Ayler", function() {
-//   var ctrl, scope;
+describe("state manipulation: ", function() {
+  var state, ctrl;
 
-//   describe("Controller: MainCtrl", function() {
-//     beforeEach(function() {
-//       scope = {};
-//       ctrl = new MainCtrl(scope);
-//       scope.errors = [];
-//       scope.anyErrors = false;
-//     });
+  beforeEach(function() {
+    module("ayler");
+    inject(function(State) {
+      state = State;
+      state.doc = "DOC";
+      state.source = "SOURCE";
+      state.displayDoc = true;
+      state.displaySource = true;
+      state.title = "some title";
+      state.vrs = "abcde"; // var filtering
+      state.symbolName = "Some / Name";
+      state.varList = ["some", "vars"];
+    });
+  });
 
-//     it("starts with empty title", function() {
-//       expect(scope.title).toEqual("");
-//     });
+  describe("by NsListCtrl", function() {
+    beforeEach(inject(function(ApiClient, $controller) {
+      spyOn(ApiClient, "httpGet");
+      ctrl = $controller("NsListCtrl", {$scope: {}});
+    }));
 
-//     it("prepends colon to the requested title.",function() {
-//       scope.setTitle("testme");
-//       expect(scope.title).toEqual(": testme");
-//     });
+    it("resets the doc, source and varList", function() {
+      expect(state.doc).toBe(null);
+      expect(state.source).toBe(null);
+      expect(state.varList).toEqual([]);
+    });
 
-//     describe("#handleResponse", function () {
-//       it("returns the handled response if status is done", function () {
-//         var response = {status: "done", response: "hello"};
-//         var handler = function(response) {
-//           return response + " world!";
-//         };
-//         expect(scope.handleResponse(response, handler)).toEqual("hello world!");
-//       });
-//     });
+    it("resets the displayDoc and displaySource", function() {
+      expect(state.displayDoc).toBeFalsy();
+      expect(state.displaySource).toBeFalsy();
+    });
 
-//     describe("#errorHandler", function() {
-//       it("handles correctly invokations without status", function() {
-//         scope.errorHandler("hello world");
-//         expect(scope.errors[0]).toBe("hello world");
-//       });
+    it("sets symbol name to empty and matching title", function() {
+      expect(state.symbolName).toBe(null);
+      expect(state.title).toEqual("Ayler");
+    });
+  });
 
-//       it("spacifies the status code if provided.", function() {
-//         scope.errorHandler("hello world", 404);
-//         expect(scope.errors[0]).toBe("hello world (status: 404)");
-//       });
+  describe("NsViewCtrl", function() {
+    var apiClient, scope;
+    var constructTestController = function(nslist, namespace) {
+      inject(function(ApiClient, $controller, $routeParams) {
+        state.nsList = nslist;
+        apiClient = ApiClient;
+        scope = {};
+        spyOn(ApiClient, "httpGet");
+        $routeParams.namespace = namespace;
+        $controller("NsViewCtrl", {$scope: scope});
+      });
+    };
 
-//       it("has spacial handling of 403 errors", function() {
-//         scope.errorHandler("hello world", 403);
-//         expect(scope.errors[0]).toBe("Your session has expired. Please refresh the browser.");
-//       });
+    it("resets the source and the var filtering", function() {
+      constructTestController(["one", "two"], "clojure.java.io");
+      expect(state.source).toBe(null);
+      expect(state.vrs).toEqual("");
+    });
+    
+    it("hides the source but display the doc", function() {
+      constructTestController(["one", "two"], "clojure.java.io");
+      expect(state.displayDoc).toBeTruthy();
+      expect(state.displaySource).toBeFalsy();
+    });
 
-//       it("sets anyErrors on every error", function() {
-//         scope.errorHandler("hello world");
-//         expect(scope.anyErrors).toBeTruthy();
-//       });
-//     });
+    it("sets the symbolName to the namespace with matching title", function() {
+      constructTestController(["one", "two"], "clojure.java.io");
+      expect(state.symbolName).toEqual("clojure.java.io");
+      expect(state.title).toEqual("Ayler: clojure.java.io");
+    });
 
-//     describe("#clearErrors", function(){
-//       beforeEach(function() {
-//         scope.anyErrors = true;
-//         scope.errors = ["hello world"];
-//       });
+    it("populates the varList", function() {
+      constructTestController(["one", "two"], "clojure.java.io");
+      var urls = _.map(apiClient.httpGet.calls, function(call) {
+        return call.args[0];
+      });
+      expect(urls).toContain("/api/ls/clojure.java.io");
+    });
 
-//       it("clears the anyErrors flag", function() {
-//         scope.clearErrors();
-//         expect(scope.anyErrors).toBeFalsy();
-//       });
+    it("does not reload the nsList is it's not empty", function() {
+      constructTestController(["one", "two"], "clojure.java.io");
+      expect(apiClient.httpGet.calls[0].args[0])
+        .toEqual("/api/ls/clojure.java.io");
+    });
 
-//       it("clears the errors", function() {
-//         scope.clearErrors();
-//         expect(scope.errors.length).toBe(0);
-//       });
-//     });
-//   });
+    it("populates the nsList if it's empty", function() {
+      constructTestController([], "clojure.java.io");
+      expect(apiClient.httpGet.calls[0].args[0]) .toEqual("/api/ls");
+    });
 
-//   describe("Controller: NamespaceListCtrl", function() {
-//     var $httpBackend, location;
-//     var nsResponse = {
-//       "status": "done",
-//       "response": [{"name": "clojure.core", "url": "clojure.core"},
-//                    {"name": "clojure.main", "url": "clojure.main"},
-//                    {"name": "other.ns", "url": "other.ns"}]};
-//     var varResponse = {
-//       "status": "done",
-//       "response": [{"name":"*","url":"clojure.core/%2A"},
-//                    {"name":"*'","url":"clojure.core/%2A%27"},
-//                    {"name":"*1","url":"clojure.core/%2A1"}]};
-
-//     beforeEach(inject(function($location, $rootScope, $controller, _$httpBackend_) {
-//       scope = $rootScope.$new();
-//       scope.handleResponse = function() {};
-//       scope.httpFetch = function() {};
-//       ctrl = $controller(NamespaceListCtrl, {$scope: scope});
-//     }));
-
-//     it("#namespacesHandler assigns namespaces", function() {
-//       scope.namespacesHandler(nsResponse["response"]);
-//       expect(scope.namespaces[0]["name"]).toBe("clojure.core");
-//     });
-
-//     it("#varsHandler assigns vars", function() {
-//       scope.varsHandler(varResponse["response"]);
-//       expect(scope.vars[2]["name"]).toBe("*1");
-//     });
-
-//     it("#resetVarsFilter should do as advertised", function() {
-//       scope.vrs = "filter";
-//       scope.resetVarsFilter();
-//       expect(scope.vrs).toBe("");
-//     });
-//   });
-
-//   describe("Controller: NamespaceCtrl", function() {
-//     var $httpBackend, location;
-
-//     beforeEach(inject(function($routeParams, $rootScope, $controller, _$httpBackend_) {
-//       scope = $rootScope.$new();
-//       $routeParams.namespace = "hello?";
-//       scope.handleResponse = function() {};
-//       scope.loadVars = function() {};
-//       scope.httpFetch = function() {};
-//       scope.resetVarsFilter = function() {};
-//       scope.setTitle = function() {};
-//       spyOn(scope, "resetVarsFilter");
-//       spyOn(scope, "setTitle");
-//       ctrl = $controller(NamespaceCtrl, {$scope: scope});
-//     }));
-
-//     it("correctly assigns nsName", function() {
-//       expect(scope.nsName).toBe("hello%3F");
-//     });
-
-//     it("resets vars filter when loaded", function() {
-//       expect(scope.resetVarsFilter).toHaveBeenCalled();
-//     });
-
-//     it("sets the title with the correct namespace", function() {
-//       expect(scope.setTitle).toHaveBeenCalledWith(scope.nsName);
-//     });
-
-//     it("handleNsDoc assigns docstring", function() {
-//       scope.handleNsDoc("hello");
-//       expect(scope.docstring).toEqual("hello");
-//     });
-
-//     it("handles indicates the lack of namespace docs", function() {
-//       scope.handleNsDoc('');
-//       expect(scope.docstring).toEqual("No Namespace Docs.");
-//     });
-//   });
-
-//   describe("Controller: VarInfoCtrl", function() {
-//     var $httpBackend;
-
-//     beforeEach(inject(function($routeParams, $rootScope, $controller, _$httpBackend_) {
-//       $routeParams.namespace = "ns?";
-//       $routeParams.var = "vr?";
-//       scope = $rootScope.$new();
-//       scope.httpFetch = function() {};
-//       scope.setTitle = function() {};
-//       scope.vars = [];
-//       scope.loadVars = function() {};
-//       scope.handleResponse = function() {};
-//       ctrl = $controller(VarInfoCtrl, {$scope: scope});
-//     }));
-
-//     it("correctly assigns nsName and varName", function() {
-//       expect(scope.nsName).toBe("ns%3F");
-//       expect(scope.varName).toBe("vr%3F");
-//     });
-
-//     it("#handleVarDoc handles docs correctly", function() {
-//       scope.handleVarDoc("hello world");
-//       expect(scope.docstring).toBe("hello world");
-//     });
-
-//     it("#handleVarDoc indicates when docs not found", function() {
-//       scope.handleVarDoc("");
-//       expect(scope.docstring).toBe("No Docs.");
-//     });
-
-//     it("#handleSource handles source correctly", function() {
-//       scope.handleSource("(some source)");
-//       expect(scope.source).toMatch(/\<span class\=/)
-//     });
-
-//     it("#handleSource indicates source not found", function() {
-//       scope.handleSource(null);
-//       expect(scope.source).toBe("<span>Source not found.</span>");
-//     });
-
-//     it("#refreshVars should reload vars when varlist is empty", function() {
-//       scope.vars = [];
-//       spyOn(scope, "loadVars");
-//       scope.refreshVars();
-//       expect(scope.loadVars).toHaveBeenCalled();
-//     });
-
-//     it("#refreshVars should not reload vars if varlist exists", function() {
-//       scope.vars = ["one", "two", "three"];
-//       spyOn(scope, "loadVars");
-//       scope.refreshVars();
-//       expect(scope.loadVars).not.toHaveBeenCalled();
-//     });
-//   });
-
-//   describe("Controller: AllNsCtrl", function(){
-//     beforeEach(inject(function($rootScope, $location, $controller, _$httpBackend_) {
-//       scope = $rootScope.$new();
-//       scope.httpFetch = function() {};
-//       ctrl = $controller(AllNsCtrl, {$scope: scope});
-//     }));
-
-//     it("#handleAllNses assigns response correctly", function() {
-//       response = ["clojure.core", "other.namespace"];
-//       scope.handleAllNses(response);
-//       expect(scope.allNses).toEqual(response);
-//     });
-//   });
-// });
+    it("unescapes the route's namespace", function() {
+      constructTestController(["one"], "clojure.some%3Cns");
+      expect(scope.namespace).toEqual("clojure.some<ns");
+    });
+  });
+});
