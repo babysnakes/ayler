@@ -86,7 +86,13 @@
         <img src="img/ajax-loader.gif"/ ng-show="state.docBusy">
         <pre id="docstring">{{state.doc}}</pre>
       </div>
-      <div ng-show="State.displaySource">{{state.source}}</div>
+      <div ng-show="state.displaySource">
+        <h3><small>Source</small></h3>
+        <img src="img/ajax-loader.gif"/ ng-show="state.sourceBusy">
+        <div class="highlighter">
+          <pre id="source" ng-bind-html-unsafe="state.source"></pre>
+        </div>
+      </div>
       <div ng-view></div> <!-- Do not remove this line! -->
     </div>
     <div id="connectForm" class="modal hide fade">

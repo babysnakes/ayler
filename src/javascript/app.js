@@ -48,14 +48,24 @@ aylerApp.factory("State", function() {
     });
   };
 
-  state.setVarList = function(varlst, ns) {
-    state.varList = _.map(varlst, function(item) {
-      return {name: item, url: escape(ns + "/" + item)};
-    });
+  state.setVarList = function(ns) {
+    return function(varlst) {
+      state.varList = _.map(varlst, function(item) {
+        return {name: item, url: escape(ns + "/" + item)};
+      });
+    };
   };
 
   state.setDoc = function(text) {
-    state.doc = text || "No Namespace Doc."
+    state.doc = text || "No documentation found.";
+  };
+
+  state.setSource = function(text) {
+    if (text) {
+      state.source = hljs.highlight("clojure", text).value;
+    } else {
+      state.source = "<span>Source not found.</span>";
+    }
   };
 
   return state;
@@ -160,16 +170,34 @@ aylerApp.controller("NsViewCtrl", function($scope, State, $routeParams, ApiClien
     ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
   }
   ApiClient.httpGet("/api/ls/" + escape($scope.namespace),
-                    "varListBusy", State.setVarList);
+                    "varListBusy", State.setVarList($scope.namespace));
   ApiClient.httpGet("/api/doc/" + escape($scope.namespace),
-                    "docBusy", State.setDoc)
+                    "docBusy", State.setDoc);
 
 });
 
 // Configure the state for displaying var.
-aylerApp.controller("VarViewCtrl", function($scope, State) {
+aylerApp.controller("VarViewCtrl", function($scope, State, $routeParams, ApiClient) {
   $scope.state = State;
-  State.doc = "TODO: Var doc";
-  State.source = "TODO: Var source";
-  // TODO: set varlist, doc and
+  State.displayDoc = true;
+  State.displaySource = true;
+  $scope.namespace = unescape($routeParams.namespace);
+  $scope.var = unescape($routeParams.var);
+  State.symbolName = $scope.namespace + " / " + $scope.var;
+  State.setTitle(State.symbolName);
+
+  if (_.isEmpty(State.nsList)) {
+    ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+  };
+
+  if (_.isEmpty(State.varList)) {
+    ApiClient.httpGet("/api/ls/" + escape($scope.namespace),
+                      "varListBusy", State.setVarList($scope.namespace));
+  };
+
+  ApiClient.httpGet("/api/doc/" + escape($scope.namespace + "/" + $scope.var),
+                    "docBusy", State.setDoc);
+
+  ApiClient.httpGet("/api/source/" + escape($scope.namespace + "/" + $scope.var),
+                    "sourceBusy", State.setSource);
 });

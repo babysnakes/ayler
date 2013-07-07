@@ -29,7 +29,7 @@ describe("State service", function() {
 
       it("indicates when no doc was found", inject(function(State) {
         State.setDoc(null);
-        expect(State.doc).toEqual("No Namespace Doc.");
+        expect(State.doc).toEqual("No documentation found.");
       }));
     });
   });
@@ -39,7 +39,7 @@ describe("State service", function() {
 
     beforeEach(inject(function(State) {
       state = State;
-      state.setVarList(["me<"], "core:one");
+      state.setVarList("core:one")(["me<"]);
     }));
 
     it("sets the varList name with unescaped value", function() {
@@ -195,6 +195,50 @@ describe("state manipulation: ", function() {
     it("unescapes the route's namespace", function() {
       constructTestController(["one"], "clojure.some%3Cns");
       expect(scope.namespace).toEqual("clojure.some<ns");
+    });
+  });
+
+  describe("VarViewCtrl", function() {
+    var apiClient, scope, apiCalls;
+    var constructTestController = function(nslist, varlist, namespace, varname) {
+      inject(function(ApiClient, $controller, $routeParams) {
+        state.nsList = nslist;
+        state.varList = varlist;
+        state.displayDoc = false;
+        state.displaySource = false;
+        apiClient = ApiClient;
+        scope = {};
+        spyOn(ApiClient, "httpGet");
+        $routeParams.namespace = namespace;
+        $routeParams.var = varname;
+        $controller("VarViewCtrl", {$scope: scope});
+        apiCalls = apiClient.httpGet.calls;
+      });
+    };
+
+    it("displays both the source and the doc", function() {
+      constructTestController(["ns"], ["var"], "namespace", "var");
+      expect(state.displaySource).toBeTruthy();
+      expect(state.displayDoc).toBeTruthy();
+    });
+
+    it("populates the namespace and var unescaped", function() {
+      constructTestController(["ns"], ["var"], "namespace%2A", "var%2A");
+      expect(scope.namespace).toEqual("namespace*");
+      expect(scope.var).toEqual("var*");
+    });
+
+    it("does not refresh the nsList and varList if they have value", function() {
+      constructTestController(["ns"], ["var"], "namespace", "var");
+      var urls = _.map(apiCalls, function(call) {return call.args[0];});
+      expect(urls).not.toContain("/api/ls");
+      expect(urls).not.toContain("/api/ls/namespace");
+    });
+
+    it("sets the symbolName and the matching title", function() {
+      constructTestController(["ns"], ["var"], "namespace%2A", "var%2A");
+      expect(state.symbolName).toEqual("namespace* / var*");
+      expect(state.title).toEqual("Ayler: namespace* / var*");
     });
   });
 });
