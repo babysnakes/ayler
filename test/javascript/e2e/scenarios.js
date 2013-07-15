@@ -104,7 +104,7 @@ describe("all namespaces usage scenario", function() {
   it("default usage", function() {
     element("#show-all-ns-modal", "search button").click();
     sleep(0.6);
-    select("selectedNs").option("clojure.zip")
+    select("state.selectedNs").option("clojure.zip")
     element("#allNsModal input[type=submit]").click();
     sleep(1);
     expect(browser().location().path()).toBe("/clojure.zip");

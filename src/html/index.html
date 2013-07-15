@@ -15,7 +15,7 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" id="show-all-ns-modal">
+              <a  href="#" ng-click="loadAllNses()" id="show-all-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
@@ -71,7 +71,7 @@
           </li>
         </ul>
       </div>
-      <h2 ns-show="state.symbolName"><small>{{state.symbolName}}</small></h2>
+      <h2 ng-show="state.symbolName"><small>{{state.symbolName}}</small></h2>
       <div ng-show="state.displayDoc">
         <h3><small>Docstring</small></h3>
         <img src="img/ajax-loader.gif"/ ng-show="state.docBusy">
@@ -113,7 +113,7 @@
       <div class="modal-header">
         <h3>All namespaces in classpath</h3>
       </div>
-      <form>
+      <form ng-submit="selectNsToRequire()">
         <div class="modal-body">
           <p>
             Select a namespace from the list below to be loaded into
@@ -128,9 +128,11 @@
             dependencies. Otherwise you'll get
             a <em>FileNotFoundException</em> error.
           </div>
-          <input type="text" class="input-medium" name="nsFilter"
-                 placeholder="Filter namespaces" />
-          <select class="input-xxlarge" size="8"></select>
+          <input type="text" class="input-medium" name="allNsFilter"
+                 placeholder="Filter namespaces" ng-model="allNsFilter"/>
+          <select class="input-xxlarge" size="8" ng-model="state.selectedNs"
+                  ng-options="ns for ns in state.allNses | filter:allNsFilter">
+          </select>
         </div>
         <div class="modal-footer">
           <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>

@@ -29,6 +29,7 @@ aylerApp.factory("State", function() {
     nsList: [],
     varList: [],
     errors: [],
+    allNses: [],
     doc: undefined,   // ns or var docstring
     source: undefined // var source
   };
@@ -66,6 +67,11 @@ aylerApp.factory("State", function() {
     } else {
       state.source = "<span>Source not found.</span>";
     }
+  };
+
+  state.setAllNses = function(nses) {
+    state.allNses = nses || [];
+    state.selectedNs = _.first(state.allNses);
   };
 
   state.appendError = function(error) {
@@ -137,6 +143,19 @@ aylerApp.factory("ApiClient", function(State, $http) {
       });
   };
 
+  // Wrapper for $http.get.
+  //
+  // params:
+  // * url: The url to post to.
+  // * params: The params to post (object);
+  // * succ: A success function. Should accept (data) as parameter.
+  // * err: An error function. Should accept 4 parameters:
+  //        (data, status, headers, config).
+  apiClient.httpPost = function(url, params, succ, err) {
+    $http.post(url, params)
+      .success(succ).error(err);
+  };
+
   return apiClient;
 });
 
@@ -144,8 +163,27 @@ aylerApp.directive("errors", function() {
   return {templateUrl: "templates/errors.html"};
 });
 
-aylerApp.controller("MainCtrl", function($scope, State) {
+aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location) {
   $scope.state = State;
+
+  $scope.loadAllNses = function() {
+    ApiClient.httpGet("/api/lsall", "allNsBusy", State.setAllNses);
+    $("#allNsModal").modal("show");
+  };
+
+  $scope.selectNsToRequire = function() {
+    var selected = escape($scope.state.selectedNs);
+    var url = "/api/require/" + selected;
+    ApiClient.httpPost(
+      url, {},
+      function(data) {
+        $("#allNsModal").modal("hide");
+        $location.path("/" + selected);
+      },
+      function(data, status, headers, config) {
+        ApiClient.handleError(data, status);
+      });
+  };
 });
 
 // Configure the state for listing namespaces.
