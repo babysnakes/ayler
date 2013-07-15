@@ -78,21 +78,21 @@ describe("Regular workflow", function() {
 describe("Error reporting and dismissal", function() {
   it("does now show error form if no errors exist", function() {
     browser().navigateTo("/");
-    expect(element("#errors").css("display")).toBe("none");
+    expect(element(".alert-error").css("display")).toBe("none");
   });
 
   it("displays the errors when evailable", function() {
     browser().navigateTo("/#/hello-world");
-    expect(element("#errors").css("display")).toBe("block");
-    expect(element("#errors li").text()).toMatch(/hello-world/);
+    expect(element(".alert-error").css("display")).toBe("block");
+    expect(element(".alert-error li").text()).toMatch(/hello-world/);
   });
 
   it("hides and deletes existing errors when clicking 'Dissmiss'", function() {
     browser().navigateTo("/#/hello-world");
-    expect(repeater("#errors li", "errors").count()).toBeGreaterThan(0);
-    element("#errors button", "Dismiss").click();
-    expect(element("#errors").css("display")).toBe("none");
-    expect(repeater("#errors li", "errors").count()).toBe(0);
+    expect(repeater(".alert-error li", "errors").count()).toBeGreaterThan(0);
+    element(".alert-error button", "Dismiss").click();
+    expect(element(".alert-error").css("display")).toBe("none");
+    expect(repeater(".alert-error li", "errors").count()).toBe(0);
   });
 });
 

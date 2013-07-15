@@ -1,4 +1,6 @@
 describe("State service", function() {
+  var state;
+
   beforeEach(function() {
     module("ayler");
   });
@@ -35,8 +37,6 @@ describe("State service", function() {
   });
 
   describe("#setVarList", function() {
-    var state;
-
     beforeEach(inject(function(State) {
       state = State;
       state.setVarList("core:one")(["me<"]);
@@ -48,6 +48,37 @@ describe("State service", function() {
 
     it("adds the namespace to the url and escapes it all", function() {
       expect(_.first(state.varList).url).toEqual("core%3Aone/me%3C");
+    });
+  });
+
+  describe("#appendError", function() {
+    beforeEach(inject(function(State) {
+      state = State;
+      state.appendError("help");
+    }));
+
+    it("appends the supplied error", function() {
+      expect(_.last(state.errors)).toEqual("help");
+    });
+
+    it("sets the showErrors flag", function() {
+      expect(state.showErrors).toBeTruthy();
+    });
+  });
+
+  describe("#clearErrors", function() {
+    beforeEach(inject(function(State) {
+      state = State;
+      state.appendError("help");
+      state.clearErrors();
+    }));
+
+    it("clears the error list", function() {
+      expect(state.errors).toEqual([]);
+    });
+
+    it("clears the showError flag", function() {
+      expect(state.showErrors).toBeFalsy();
     });
   });
 });
@@ -160,7 +191,7 @@ describe("state manipulation: ", function() {
       expect(state.source).toBe(null);
       expect(state.vrs).toEqual("");
     });
-    
+
     it("hides the source but display the doc", function() {
       constructTestController(["one", "two"], "clojure.java.io");
       expect(state.displayDoc).toBeTruthy();

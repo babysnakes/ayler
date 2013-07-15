@@ -68,6 +68,16 @@ aylerApp.factory("State", function() {
     }
   };
 
+  state.appendError = function(error) {
+    state.errors.push(error);
+    state.showErrors = true;
+  };
+
+  state.clearErrors = function() {
+    state.errors = [];
+    state.showErrors = false;
+  };
+
   return state;
 });
 
@@ -75,12 +85,13 @@ aylerApp.factory("ApiClient", function(State, $http) {
   var apiClient = {};
 
   apiClient.handleError = function(data, status) {
+    State.showErrors = true;
     if (status === undefined) {
-      State.errors.push(data);
+      State.appendError(data);
     } else if (status === 403) { // anti-forgery expired
-      State.errors.push("Your session has expired. Please refresh the browser.");
+      State.appendError("Your session has expired. Please refresh the browser.");
     } else {
-      State.errors.push(data + " (status: " + status + ")");
+      State.appendError(data + " (status: " + status + ")");
     };
   };
 
@@ -129,12 +140,8 @@ aylerApp.factory("ApiClient", function(State, $http) {
   return apiClient;
 });
 
-aylerApp.directive("aaDoc", function() {
-  return {template: "DOC"};
-});
-
-aylerApp.directive("aaSource", function() {
-  return {template: "SOURCE"};
+aylerApp.directive("errors", function() {
+  return {templateUrl: "templates/errors.html"};
 });
 
 aylerApp.controller("MainCtrl", function($scope, State) {
