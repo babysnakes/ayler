@@ -120,7 +120,7 @@
             your REPL. When submitting you'll see the documentation
             for this namespace.
           </p>
-          <div class="alert alert-block">
+          <div class="alert alert-block" ng-show="state.showErrors">
             <h4>Notice!</h4>
             In order to use this feature you must
             add <em>org.clojure/tools.namespace</em>
@@ -128,6 +128,7 @@
             dependencies. Otherwise you'll get
             a <em>FileNotFoundException</em> error.
           </div>
+          <div errors></div>
           <input type="text" class="input-medium" name="allNsFilter"
                  placeholder="Filter namespaces" ng-model="allNsFilter"/>
           <select class="input-xxlarge" size="8" ng-model="state.selectedNs"
