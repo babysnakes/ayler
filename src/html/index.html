@@ -15,19 +15,19 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" ng-click="loadAllNses()" id="show-all-ns-modal">
+              <a  href="#" ng-click="loadAllNses($event)" id="show-all-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
-              <a href="#">
+              <a href="#" ng-click="reloadNses($event)">
                 <i class="icon-refresh" title="Refresh namespaces"></i>
               </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
-              <a href="#">
+              <a href="#" ng-click="disconnect($event)">
                 <i class="icon-off" title="Disconnect"></i>
               </a>
             </li>
@@ -90,18 +90,18 @@
       <div class="modal-header">
         <h3>Connect to remote nrepl</h3>
       </div>
-      <div class="alert alert-error">
+      <div ng-show="disconnected" class="alert alert-error">
         You seem to be disconnected from the nrepl server. Please
         reconnect!
       </div>
-      <form>
+      <form ng-submit="connect()">
         <div class="modal-body">
           <!-- Insert error here -->
           <label>Host</label>
           <input type="text" placeholder="Default: Localhost"
-                 name="port" />
+                 ng-model="remoteHost" name="host" />
           <label>Port</label>
-          <input type="text" name="host" />
+          <input type="text" name="port" ng-model="remotePort" />
         </div>
         <div class="modal-footer">
           <input type="submit" id="submit" value="Submit"

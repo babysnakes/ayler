@@ -87,7 +87,7 @@ aylerApp.factory("State", function() {
   return state;
 });
 
-aylerApp.factory("ApiClient", function(State, $http) {
+aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
   var apiClient = {};
 
   apiClient.handleError = function(data, status) {
@@ -110,6 +110,10 @@ aylerApp.factory("ApiClient", function(State, $http) {
   //            'done'. Receives the response as sole parameter.
   apiClient.handleResponse = function(response, handler) {
     switch(response.status) {
+    case "disconnected":
+      $rootScope.$broadcast("connect", {disconnected: true});
+    case "not-connected":
+      $rootScope.$broadcast("connect");
     case "done":
       handler(response.response);
       break;
@@ -143,6 +147,10 @@ aylerApp.factory("ApiClient", function(State, $http) {
       });
   };
 
+  var defaultErrorHandler = function(data, status, headers, config) {
+    ApiClient.handleError(data, status);
+  }
+
   // Wrapper for $http.get.
   //
   // params:
@@ -151,9 +159,10 @@ aylerApp.factory("ApiClient", function(State, $http) {
   // * succ: A success function. Should accept (data) as parameter.
   // * err: An error function. Should accept 4 parameters:
   //        (data, status, headers, config).
+  //        If empty the defaultErrorHandler is used.
   apiClient.httpPost = function(url, params, succ, err) {
     $http.post(url, params)
-      .success(succ).error(err);
+      .success(succ).error(err || defaultErrorHandler);
   };
 
   return apiClient;
@@ -163,12 +172,49 @@ aylerApp.directive("errors", function() {
   return {templateUrl: "templates/errors.html"};
 });
 
-aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location) {
+aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $route) {
   $scope.state = State;
 
-  $scope.loadAllNses = function() {
+  $scope.$on("connect", function(event, args) {
+    if (args && args.disconnected) {
+      $scope.disconnected = true;
+    } else {
+      $scope.disconnected = false;
+    };
+
+    $("#connectForm").modal("show");
+  });
+
+  $scope.loadAllNses = function($event) {
+    $event.preventDefault();
     ApiClient.httpGet("/api/lsall", "allNsBusy", State.setAllNses);
     $("#allNsModal").modal("show");
+  };
+
+  $scope.connect = function() {
+    ApiClient.httpPost(
+      "/api/remote/",
+      {"port": $scope.remotePort,
+       "host": $scope.remoteHost},
+      function(data) {
+        $("#connectForm").modal("hide");
+        $location.path("/");
+        $route.reload();
+      });
+  };
+
+  $scope.disconnect = function($event) {
+    $event.preventDefault();
+    ApiClient.httpPost(
+      "/api/disconnect/", {},
+      function(data) {
+        $route.reload();
+      });
+  };
+
+  $scope.reloadNses = function($event) {
+    $event.preventDefault();
+    ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
   };
 
   $scope.selectNsToRequire = function() {
@@ -179,9 +225,6 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location) {
       function(data) {
         $("#allNsModal").modal("hide");
         $location.path("/" + selected);
-      },
-      function(data, status, headers, config) {
-        ApiClient.handleError(data, status);
       });
   };
 });
@@ -196,6 +239,7 @@ aylerApp.controller("NsListCtrl", function($scope, State, ApiClient) {
   State.displaySource = false;
   State.symbolName = null; // Pretty name of the queried namespace or var.
   State.setTitle();
+
   ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
 });
 
