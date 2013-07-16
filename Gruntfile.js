@@ -38,6 +38,7 @@ module.exports = function(grunt) {
         files: {
           "resources/public/js/dependencies.js": [
             "vendor/jquery/jquery.js",
+            "vendor/underscore/underscore.js",
             "vendor/angular/angular.js",
             "vendor/bootstrap/docs/assets/js/bootstrap.js",
             "vendor/highlight.js/highlight.pack.js"],
@@ -51,6 +52,7 @@ module.exports = function(grunt) {
       // minified versions for production
       production: {
         src: ["vendor/jquery/jquery.min.js",
+              "vendor/underscore/underscore-min.js",
               "vendor/angular/angular.min.js",
               "vendor/bootstrap/docs/assets/js/bootstrap.min.js",
               "vendor/highlight.js/highlight.pack.js"],
@@ -111,6 +113,7 @@ module.exports = function(grunt) {
       },
       deps: {
         files: ["vendor/jquery/jquery.js",
+                "vendor/underscore/underscore.js",
                 "vendor/angular/angular.js",
                 "vendor/angular-scenario/angular-scenario.js",
                 "vendor/bootstrap/docs/assets/js/bootstrap.js",

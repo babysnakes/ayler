@@ -10,6 +10,7 @@ files = [
   JASMINE,
   JASMINE_ADAPTER,
   "vendor/jquery/jquery.js",
+  "vendor/underscore/underscore.js",
   "vendor/angular/angular.js",
   "vendor/bootstrap/docs/assets/js/bootstrap.js",
   "vendor/angular-mocks/*.js",

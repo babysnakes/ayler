@@ -8,27 +8,6 @@
             [ring.util.response :refer (response)]
             [taoensso.timbre :as timbre]))
 
-(defn- convert-to-name-and-url
-  [col f]
-  (timbre/trace (str "conver to name and url: " col))
-  (->> col
-       sort
-       (map f)))
-
-(defn- nses-to-name-and-url
-  "converts the namespace list to a map with :name and encoded :url"
-  [col]
-  (convert-to-name-and-url
-   col
-   (fn [x] {:name (name x) :url (url-encode (name x))})))
-
-(defn- vars-to-name-and-url
-  "Converts the list of vars to :name and :url (with full url)"
-  [namespace, col]
-  (convert-to-name-and-url
-   col
-   (fn [x] {:name (name x) :url (str namespace "/" (url-encode (name x)))})))
-
 (defn- apply-handler-if-successfull
   "If the provided response was successfull it applies the provided
   handler to the :response key. Otherwise it returns it as is."
@@ -46,7 +25,7 @@
 (defn- loaded-namespaces
   []
   (-> (queries/query-loaded-namespaces)
-      (apply-handler-if-successfull nses-to-name-and-url)))
+      (apply-handler-if-successfull sort)))
 
 (defn- all-namespaces
   []
@@ -58,7 +37,7 @@
   [namespace]
   (-> (url-decode namespace)
       queries/query-namespace-publics
-      (apply-handler-if-successfull (partial vars-to-name-and-url namespace))))
+      (apply-handler-if-successfull sort)))
 
 (defn- ns-doc
   "Returns the docstring of namespace"

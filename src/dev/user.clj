@@ -41,9 +41,16 @@
   (let [test-dir (io/file "test/")]
     (find-namespaces-in-dir test-dir)))
 
+(defn find-all-sources
+  "Finds all namespaces under src/"
+  []
+  (let [src-dir (io/file "src/clojure")]
+    (find-namespaces-in-dir src-dir)))
+
 ;; Can not require these nses by running in the script. why?
 (comment
-  (map require (find-all-tests)))
+  (map require (find-all-tests))
+  (map require (find-all-sources)))
 
 (defn run-all-tests
   "Runs all tests! requires them to be loaded manually first (WHY?)."
