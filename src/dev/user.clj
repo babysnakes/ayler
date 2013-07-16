@@ -35,27 +35,16 @@
   (stop)
   (refresh :after 'user/go))
 
-(defn find-all-tests
-  "Find all tests under test/"
-  []
-  (let [test-dir (io/file "test/")]
-    (find-namespaces-in-dir test-dir)))
-
-(defn find-all-sources
-  "Finds all namespaces under src/"
-  []
-  (let [src-dir (io/file "src/clojure")]
-    (find-namespaces-in-dir src-dir)))
-
-;; Can not require these nses by running in the script. why?
-(comment
-  (map require (find-all-tests))
-  (map require (find-all-sources)))
+(defn find-nses-in-path
+  "Finds all namespaces in supplied path."
+  [path]
+  (let [dir (io/file path)]
+    (find-namespaces-in-dir dir)))
 
 (defn run-all-tests
   "Runs all tests! requires them to be loaded manually first (WHY?)."
   []
-  (apply test/run-tests (find-all-tests)))
+  (apply test/run-tests (find-nses-in-path "test/")))
 
 ;; Local Variables:
 ;; peval: (define-clojure-indent
