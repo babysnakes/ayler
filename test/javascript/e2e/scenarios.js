@@ -73,6 +73,20 @@ describe("Regular workflow", function() {
       expect(element("#source").text()).toMatch(/defmacro/);
     });
   });
+
+  describe("rendering var's dostrings", function() {
+    it("displays the function's arguments", function() {
+      browser().navigateTo("/#/clojure.core/inc");
+      sleep(0.4);
+      expect(element("#docstring").text()).toMatch(/\(\[x\]\)\n  /);
+    });
+
+    it("displays the docstring for non functions without prefixed newline", function() {
+      browser().navigateTo("/#/clojure.core/*1");
+      sleep(0.4);
+      expect(element("#docstring").text()).toMatch(/^  \w+/);
+    })
+  });
 });
 
 describe("Error reporting and dismissal", function() {
