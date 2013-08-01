@@ -1,34 +1,12 @@
 (ns ayler.api
   "Handles all API calls."
-  (:require [taoensso.timbre :as timbre]
-            [ayler.ns-queries :as queries]
-            [ayler.nrepl-client :as client])
-  (:use [compojure.core :only (defroutes GET POST)]
-        [ring.middleware.json :only (wrap-json-response wrap-json-params)]
-        [ring.util.response :only (response)]
-        [ring.util.codec :only (url-encode url-decode)]
-        [ayler.helpers :only (var-route)]))
-
-(defn- convert-to-name-and-url
-  [col f]
-  (timbre/trace (str "conver to name and url: " col))
-  (->> col
-       sort
-       (map f)))
-
-(defn- nses-to-name-and-url
-  "converts the namespace list to a map with :name and encoded :url"
-  [col]
-  (convert-to-name-and-url
-   col
-   (fn [x] {:name (name x) :url (url-encode (name x))})))
-
-(defn- vars-to-name-and-url
-  "Converts the list of vars to :name and :url (with full url)"
-  [namespace, col]
-  (convert-to-name-and-url
-   col
-   (fn [x] {:name (name x) :url (str namespace "/" (url-encode (name x)))})))
+  (:require [ayler.ns-queries :as queries]
+            [ayler.nrepl-client :as client]
+            [compojure.core :refer (defroutes GET POST)]
+            [ring.middleware.json :refer (wrap-json-response wrap-json-params)]
+            [ring.util.codec :refer (url-encode url-decode)]
+            [ring.util.response :refer (response)]
+            [taoensso.timbre :as timbre]))
 
 (defn- apply-handler-if-successfull
   "If the provided response was successfull it applies the provided
@@ -47,7 +25,7 @@
 (defn- loaded-namespaces
   []
   (-> (queries/query-loaded-namespaces)
-      (apply-handler-if-successfull nses-to-name-and-url)))
+      (apply-handler-if-successfull sort)))
 
 (defn- all-namespaces
   []
@@ -59,7 +37,7 @@
   [namespace]
   (-> (url-decode namespace)
       queries/query-namespace-publics
-      (apply-handler-if-successfull (partial vars-to-name-and-url namespace))))
+      (apply-handler-if-successfull sort)))
 
 (defn- ns-doc
   "Returns the docstring of namespace"
@@ -110,6 +88,6 @@
   (POST "/api/disconnect/" _ (response (client/disconnect))))
 
 (def app
-  (-> (var-route routes)
+  (-> routes
       wrap-json-response
       wrap-json-params))

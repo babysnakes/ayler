@@ -1,4 +1,15 @@
 # Project history
+### 0.4.0
+Features:
+
+* Added function arguments in the docstring (when applicable).
+
+Fixes:
+
+* Instead of embedding the anti-forgery middleware we use a [custom
+  fork of it][braf]
+* Revised [clojure workflow][workflow].
+* Rewrite of *angularjs* code to better use constructs.
 
 ### 0.3.0
 Features:
@@ -36,4 +47,5 @@ First release. Features:
 * Remote nrepl is configurable only via CLI options
 
 [ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
-
+[braf]: https://github.com/babysnakes/ring-anti-forgery
+[workflow]: http://thinkrelevance.com/blog/2013/06/04/clojure-workflow-reloaded

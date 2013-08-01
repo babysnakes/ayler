@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html  ng-app="ayler" ng-controller="MainCtrl">
+<html ng-app="ayler" ng-controller="MainCtrl">
   <head>
     <link rel="stylesheet" href="/css/dependencies.css" type="text/css" />
     <link rel="stylesheet" href="/css/app.css" type="text/css" />
     <script src="/js/dependencies.js"></script>
     <script src="/js/app.js"></script>
-    <title>Ayler{{title}}</title>
+    <title>{{state.title}}</title>
   </head>
-  <body ng-controller="NamespaceListCtrl">
+  <body>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -15,13 +15,13 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" ng-click="showAllNsModal()" id="show-all-ns-modal">
+              <a  href="#" ng-click="loadAllNses($event)" id="show-all-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
-              <a href="#" ng-click="refreshClicked($event)">
+              <a href="#" ng-click="reloadNses($event)">
                 <i class="icon-refresh" title="Refresh namespaces"></i>
               </a>
             </li>
@@ -36,15 +36,7 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-block alert-error" id="errors" ng-show="anyErrors">
-        <p><strong>Error(s):</strong></p>
-        <ul>
-          <li ng-repeat="error in errors">{{error}}</li>
-        </ul>
-        <button class="btn" type="button" ng-click="clearErrors()">
-          Dismiss
-        </button>
-      </div>
+      <div errors></div>
       <div class="container row">
         <div class="container span6">
           <div class="filter">
@@ -52,34 +44,47 @@
               <input type="text" class="input-medium search-query" name="nses"
                      placeholder="Filter namespaces" ng-model="nses"/>
             </form>
-            <img src="img/ajax-loader.gif" ng-show="nsLoading">
+            <img src="img/ajax-loader.gif" ng-show="state.nsListBusy">
           </div>
         </div>
         <div class="container span6">
           <div class="filter">
             <form class="form-search span3">
               <input type="text" class="input-medium search-query" name="vrs"
-                     placeholder="Filter vars" ng-model="vrs"/>
+                     placeholder="Filter vars" ng-model="state.vrs"/>
             </form>
-            <img src="img/ajax-loader.gif"/ ng-show="varLoading">
+            <img src="img/ajax-loader.gif" ng-show="state.varListBusy">
           </div>
         </div>
       </div>
       <div class="container span6 list-window nses-window">
         <ul>
-          <li ng-repeat="ns in namespaces | filter:nses">
+          <li ng-repeat="ns in state.nsList | filter:nses">
             <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
           </li>
         </ul>
       </div>
       <div class="container span6 list-window vrs-window">
         <ul>
-          <li ng-repeat="var in vars | filter:vrs">
+          <li ng-repeat="var in state.varList | filter:state.vrs">
             <a ng-href="#/{{var.url}}">{{var.name}}</a>
           </li>
         </ul>
       </div>
-      <div ng-view></div>
+      <h2 ng-show="state.symbolName"><small>{{state.symbolName}}</small></h2>
+      <div ng-show="state.displayDoc">
+        <h3><small>Docstring</small></h3>
+        <img src="img/ajax-loader.gif"/ ng-show="state.docBusy">
+        <pre id="docstring">{{state.doc}}</pre>
+      </div>
+      <div ng-show="state.displaySource">
+        <h3><small>Source</small></h3>
+        <img src="img/ajax-loader.gif"/ ng-show="state.sourceBusy">
+        <div class="highlighter">
+          <pre id="source" ng-bind-html-unsafe="state.source"></pre>
+        </div>
+      </div>
+      <div ng-view></div> <!-- Do not remove this line! -->
     </div>
     <div id="connectForm" class="modal hide fade">
       <div class="modal-header">
@@ -94,9 +99,9 @@
           <!-- Insert error here -->
           <label>Host</label>
           <input type="text" placeholder="Default: Localhost"
-                 ng-model="remoteHost" name="port" />
+                 ng-model="remoteHost" name="host" />
           <label>Port</label>
-          <input type="text" ng-model="remotePort" name="host" />
+          <input type="text" name="port" ng-model="remotePort" />
         </div>
         <div class="modal-footer">
           <input type="submit" id="submit" value="Submit"
@@ -104,7 +109,7 @@
         </div>
       </form>
     </div>
-    <div id="allNsModal" class="modal hide fade" ng-controller="AllNsCtrl">
+    <div id="allNsModal" class="modal hide fade">
       <div class="modal-header">
         <h3>All namespaces in classpath</h3>
       </div>
@@ -115,7 +120,7 @@
             your REPL. When submitting you'll see the documentation
             for this namespace.
           </p>
-          <div class="alert alert-block">
+          <div class="alert alert-block" ng-show="state.showErrors">
             <h4>Notice!</h4>
             In order to use this feature you must
             add <em>org.clojure/tools.namespace</em>
@@ -123,10 +128,12 @@
             dependencies. Otherwise you'll get
             a <em>FileNotFoundException</em> error.
           </div>
-          <input type="text" class="input-medium" name="nsFilter"
-                 placeholder="Filter namespaces" ng-model="nsFilter"/>
-          <select class="input-xxlarge" size="8" ng-model="selectedNs"
-                  ng-options="ns for ns in allNses | filter:nsFilter"></select>
+          <div errors></div>
+          <input type="text" class="input-medium" name="allNsFilter"
+                 placeholder="Filter namespaces" ng-model="allNsFilter"/>
+          <select class="input-xxlarge" size="8" ng-model="state.selectedNs"
+                  ng-options="ns for ns in state.allNses | filter:allNsFilter">
+          </select>
         </div>
         <div class="modal-footer">
           <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>

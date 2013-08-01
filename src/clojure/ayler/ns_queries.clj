@@ -9,8 +9,8 @@
   * :response - In case of :done status this is the required response.
                 In case of :error status this is the error message.
                 Otherwise nil."
-  (:require ayler.test-helpers
-            [ayler.nrepl-client :as client]
+  (:require [ayler.nrepl-client :as client]
+            [clojure.string :as str]
             [taoensso.timbre :as timbre]))
 
 (defn- generic-response-parser
@@ -51,9 +51,16 @@
                     value-response-handler))
 
 (defn query-docstring
-  "returns docstring for requested var (specify var as string)"
+  "returns docstring for requested var (specify var as string). It
+  tries to mimic the output of the (doc) command - add argument list
+  if it's a function, fix indentation, etc."
   [var]
-  (compose-response (pr-str `(:doc (meta (find-var (symbol ~var)))))
+  (compose-response (pr-str
+                     `(-> (str (:arglists (meta (find-var (symbol ~var))))
+                               "\n  "
+                               (:doc (meta (find-var (symbol ~var)))))
+                          (str/replace-first #"\A\n" "")
+                          (str/replace-first #"\A  \Z" "")))
                     value-response-handler))
 
 (defn query-source
@@ -83,4 +90,3 @@
   [namespace]
   (compose-response (pr-str `(require (quote ~(symbol namespace))))
                     value-response-handler))
-

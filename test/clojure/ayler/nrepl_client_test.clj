@@ -1,8 +1,8 @@
 (ns ayler.nrepl-client-test
-  (:require ayler.test-helpers
-   [ayler.nrepl-client :as client]
-   [ayler.fixtures :as f])
-  (:use clojure.test))
+  (:require [ayler.fixtures :as f]
+            [ayler.nrepl-client :as client]
+            ayler.test-helpers
+            [clojure.test :refer (deftest testing is)]))
 
 (deftest parsing-response
   (testing "when remote call returns correct"
@@ -20,11 +20,21 @@
       (is (= out f/disconnected-response)))))
 
 (deftest error-handling
-  (testing "when disconnected, returns a hash with :status => :disconnected"
-    (client/set-remote 1)
-    (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
-      (is (= result {:status :disconnected}))))
-  (testing "when disconnected, returns a hash with :status => :not-connected"
-    (client/disconnect)
-    (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
-      (is (= result {:status :not-connected})))))
+  (with-redefs [client/_remote (atom [])] ;; do not change running configuration.
+    (testing "various _remote states"
+      (testing "when disconnected, returns a hash with :status => :disconnected"
+        (client/set-remote 1 "localhost")
+        (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
+          (is (= result {:status :disconnected}))))
+      (testing "when disconnected, returns a hash with :status => :not-connected"
+        (client/disconnect)
+        (let [result (#'client/eval-on-remote-nrepl :eval "(+ 1 2)")]
+          (is (= result {:status :not-connected})))))))
+
+(deftest extract-remote
+  (testing "extract real values from _remote"
+    (with-redefs [client/_remote (atom [:port 2000 :host "localhost"])]
+      (is (= (client/extract-remote) [2000 "localhost"]))))
+  (testing "returns null if port/host not configured"
+    (with-redefs [client/_remote (atom [])]
+      (is (nil? (client/extract-remote))))))

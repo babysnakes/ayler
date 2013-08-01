@@ -1,0 +1,9 @@
+<div class="alert alert-block alert-error" ng-show="state.showErrors">
+  <p><strong>Error(s):</strong></p>
+  <ul>
+    <li ng-repeat="error in state.errors">{{error}}</li>
+  </ul>
+  <button class="btn" type="button" ng-click="state.clearErrors()">
+    Dismiss
+  </button>
+</div>

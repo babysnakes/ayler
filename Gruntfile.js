@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     distDir: "target/dist",
-    standaloneJar: "target/ayler-<%= pkg.version %>-standalone.jar",
+    standaloneJar: "target/production+uberjar/ayler-<%= pkg.version %>-standalone.jar",
     distExecutable: "<%= distDir %>/ayler-<%= pkg.version %>",
 
     less: {
@@ -38,6 +38,7 @@ module.exports = function(grunt) {
         files: {
           "resources/public/js/dependencies.js": [
             "vendor/jquery/jquery.js",
+            "vendor/underscore/underscore.js",
             "vendor/angular/angular.js",
             "vendor/bootstrap/docs/assets/js/bootstrap.js",
             "vendor/highlight.js/highlight.pack.js"],
@@ -51,6 +52,7 @@ module.exports = function(grunt) {
       // minified versions for production
       production: {
         src: ["vendor/jquery/jquery.min.js",
+              "vendor/underscore/underscore-min.js",
               "vendor/angular/angular.min.js",
               "vendor/bootstrap/docs/assets/js/bootstrap.min.js",
               "vendor/highlight.js/highlight.pack.js"],
@@ -95,7 +97,8 @@ module.exports = function(grunt) {
 
     karma: {
       unit: {
-        configFile: "config/karma.conf.js"
+        configFile: "config/karma.conf.js",
+        background: true
       }
     },
 
@@ -110,6 +113,7 @@ module.exports = function(grunt) {
       },
       deps: {
         files: ["vendor/jquery/jquery.js",
+                "vendor/underscore/underscore.js",
                 "vendor/angular/angular.js",
                 "vendor/angular-scenario/angular-scenario.js",
                 "vendor/bootstrap/docs/assets/js/bootstrap.js",
@@ -140,7 +144,10 @@ module.exports = function(grunt) {
         stderr: true
       },
       uberjar: {
-        command: "lein with-profile production do clean, uberjar",
+        command: [
+          "export LEIN_SNAPSHOTS_IN_RELEASE=true",
+          "Lein with-profile production do clean, uberjar"
+        ].join(" && "),
         options: {
           stdout: true,
           stderr: true
@@ -187,7 +194,7 @@ module.exports = function(grunt) {
         }]
       },
       component: {
-        src: "config/component.json",
+        src: "config/bower.json",
         overwrite: true,
         replacements: [{
           from: /("version": ").*(",\s*)/,
@@ -227,6 +234,7 @@ module.exports = function(grunt) {
                       "concat:vendorCss",
                       'concat:development',
                       'uglify:development',
+                      'karma:unit',
                       'watch']);
   grunt.registerTask('production',
                      "Generate assets for production.",

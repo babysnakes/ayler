@@ -10,7 +10,7 @@ describe("Regular workflow", function() {
     });
 
     it("fetches namespaces list on '/'", function() {
-      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(0);
+      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(2);
     });
 
     it("offers namespace filtering", function() {
@@ -30,7 +30,7 @@ describe("Regular workflow", function() {
     });
 
     it("displays the var list", function() {
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(1);
     });
 
     it("displays something as docstring", function() {
@@ -38,14 +38,14 @@ describe("Regular workflow", function() {
     });
 
     it("offers vars filtering", function() {
-      input("vrs").enter("abcdefg");
+      input("state.vrs").enter("abcdefg");
       expect(repeater(".vrs-window li", "vars").count()).toBe(0);
     });
 
     it("cleans up vars filtering upon naviation to new namespace", function() {
-      input("vrs").enter("abcdeflkjsde");
-      browser().navigateTo("/#/clojure.main");
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      input("state.vrs").enter("abcdeflkjsde");
+      element("[href='#/clojure.main']", "clojure.main").click();
+      expect(element("[name='vrs']").val()).toEqual("");
     });
   });
 
@@ -61,8 +61,8 @@ describe("Regular workflow", function() {
     });
 
     it("displays namespaces and vars list", function() {
-      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(0);
-      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(0);
+      expect(repeater(".nses-window li", "namespaces").count()).toBeGreaterThan(1);
+      expect(repeater(".vrs-window li", "vars").count()).toBeGreaterThan(1);
     });
 
     it("displays the docustring", function() {
@@ -73,25 +73,40 @@ describe("Regular workflow", function() {
       expect(element("#source").text()).toMatch(/defmacro/);
     });
   });
+
+  describe("rendering var's dostrings", function() {
+    it("displays the function's arguments", function() {
+      browser().navigateTo("/#/clojure.core/inc");
+      sleep(0.4);
+      expect(element("#docstring").text()).toMatch(/\(\[x\]\)\n  /);
+    });
+
+    it("displays the docstring for non functions without prefixed newline", function() {
+      browser().navigateTo("/#/clojure.core/*1");
+      sleep(0.4);
+      expect(element("#docstring").text()).toMatch(/^  \w+/);
+    })
+  });
 });
 
 describe("Error reporting and dismissal", function() {
   it("does now show error form if no errors exist", function() {
     browser().navigateTo("/");
-    expect(element("#errors").css("display")).toBe("none");
+    expect(element(".alert-error").css("display")).toBe("none");
   });
 
   it("displays the errors when evailable", function() {
     browser().navigateTo("/#/hello-world");
-    expect(element("#errors").css("display")).toBe("block");
+    expect(element(".alert-error").css("display")).toBe("block");
+    expect(element(".alert-error li").text()).toMatch(/hello-world/);
   });
 
   it("hides and deletes existing errors when clicking 'Dissmiss'", function() {
     browser().navigateTo("/#/hello-world");
-    expect(repeater("#errors li", "errors").count()).toBeGreaterThan(0);
-    element("#errors button", "Dismiss").click();
-    expect(element("#errors").css("display")).toBe("none");
-    expect(repeater("#errors li", "errors").count()).toBe(0);
+    expect(repeater(".alert-error li", "errors").count()).toBeGreaterThan(0);
+    element(".alert-error button", "Dismiss").click();
+    expect(element(".alert-error").css("display")).toBe("none");
+    expect(repeater(".alert-error li", "errors").count()).toBe(0);
   });
 });
 
@@ -103,7 +118,7 @@ describe("all namespaces usage scenario", function() {
   it("default usage", function() {
     element("#show-all-ns-modal", "search button").click();
     sleep(0.6);
-    select("selectedNs").option("clojure.zip")
+    select("state.selectedNs").option("clojure.zip")
     element("#allNsModal input[type=submit]").click();
     sleep(1);
     expect(browser().location().path()).toBe("/clojure.zip");

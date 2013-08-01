@@ -1,27 +1,7 @@
 (ns ayler.api-test
   (:require [ayler.api :as api]
-            [ayler.nrepl-client :as nclient])
-  (:use clojure.test))
-
-(deftest nses-to-name-and-url
-  (testing "when input is nil"
-    (is (= (#'api/nses-to-name-and-url nil) '())))
-  (testing "escaping urls"
-    (let [result (#'api/nses-to-name-and-url '(hello world!))]
-      (is (= (:url (second result)) "world%21"))))
-  (testing "sorting namespaces"
-    (let [result (#'api/nses-to-name-and-url '(world hello))]
-      (is (= (:name (first result)) "hello")))))
-
-(deftest vars-to-name-and-url
-  (testing "when input is nil"
-    (is (= (#'api/vars-to-name-and-url nil nil) '())))
-  (testing "escaping urls"
-    (let [result (#'api/vars-to-name-and-url "ns" '(hello world!))]
-      (is (= (:url (second result)) "ns/world%21"))))
-  (testing "sorting namespaces"
-    (let [result (#'api/vars-to-name-and-url "ns" '(world hello))]
-      (is (= (:name (first result)) "hello")))))
+            [ayler.nrepl-client :as nclient]
+            [clojure.test :refer (deftest testing is)]))
 
 (deftest only-applying-parser-to-successfull-results
   (testing "un-successfull result"
