@@ -144,7 +144,10 @@ module.exports = function(grunt) {
         stderr: true
       },
       uberjar: {
-        command: "lein with-profile production do clean, uberjar",
+        command: [
+          "export LEIN_SNAPSHOTS_IN_RELEASE=true",
+          "Lein with-profile production do clean, uberjar"
+        ].join(" && "),
         options: {
           stdout: true,
           stderr: true
