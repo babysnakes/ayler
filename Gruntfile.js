@@ -191,7 +191,7 @@ module.exports = function(grunt) {
         }]
       },
       component: {
-        src: "config/component.json",
+        src: "config/bower.json",
         overwrite: true,
         replacements: [{
           from: /("version": ").*(",\s*)/,
