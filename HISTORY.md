@@ -1,10 +1,15 @@
 # Project history
 ### 0.4.0
+Features:
+
+* Added function arguments in the docstring (when applicable).
+
 Fixes:
 
 * Instead of embedding the anti-forgery middleware we use a [custom
   fork of it][braf]
 * Revised [clojure workflow][workflow].
+* Rewrite of *angularjs* code to better use constructs.
 
 ### 0.3.0
 Features:
