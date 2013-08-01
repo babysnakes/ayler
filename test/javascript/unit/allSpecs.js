@@ -101,6 +101,11 @@ describe("ApiClient Service", function() {
       expect(state.errors[0]).toEqual("myerror");
     });
 
+    it("adds default error when no error supplied (nrepl issue?)", function() {
+      target.handleError("");
+      expect(state.errors[0]).toMatch(/unknown/);
+    });
+
     it("indicates csrf error on status 403", function() {
       target.handleError("some error", 403);
       expect(state.errors[0]).toMatch(/expired/);

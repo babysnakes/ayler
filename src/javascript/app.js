@@ -92,12 +92,20 @@ aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
 
   apiClient.handleError = function(data, status) {
     State.showErrors = true;
-    if (status === undefined) {
-      State.appendError(data);
-    } else if (status === 403) { // anti-forgery expired
+    switch (status) {
+    case undefined:
+      var message =
+        "An unknown error has occured: empty response from the server." +
+        "This may be caused by nrepl connection issues. " +
+        "If it happens again you may need to restart Ayler.";
+      State.appendError(data || message);
+      break;
+    case 403:
       State.appendError("Your session has expired. Please refresh the browser.");
-    } else {
+      break;
+    default:
       State.appendError(data + " (status: " + status + ")");
+      break;
     };
   };
 
