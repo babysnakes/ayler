@@ -1,4 +1,10 @@
 # Project history
+
+### 0.4.1
+Features:
+
+* Only show an error once.
+
 ### 0.4.0
 Features:
 

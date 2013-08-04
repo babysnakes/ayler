@@ -76,6 +76,7 @@ aylerApp.factory("State", function() {
 
   state.appendError = function(error) {
     state.errors.push(error);
+    state.errors = _.uniq(state.errors);
     state.showErrors = true;
   };
 
