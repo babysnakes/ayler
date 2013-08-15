@@ -116,6 +116,12 @@ describe("ApiClient Service", function() {
       expect(state.errors[0]).toMatch(/some error/);
       expect(state.errors[0]).toMatch(/status: 500/);
     });
+
+    it("displays only uniq errors", function() {
+      target.handleError("Some Error", 500);
+      target.handleError("Some Error", 500);
+      expect(state.errors.length).toEqual(1);
+    });
   });
 
   describe("#handleResponse", function() {

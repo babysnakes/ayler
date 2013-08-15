@@ -13,7 +13,8 @@
    ["-P", "nrepl port to connect to" :parse-fn #(Integer. %)]
    ["-H", "nrepl host to connect to" :default "localhost"]
    ["--version" "display the version and exit"]
-   ["-l" "--level" "log level (warn info debug trace)" :parse-fn keyword]
+   ["-l" "--level" "log level (warn info debug trace)"
+    :parse-fn keyword :default "info"]
    ["-h" "--help" "show this message"]])
 
 (defn system
@@ -24,10 +25,10 @@
 (defn start
   "Start all components of the application. Returns the updates system."
   [system]
-  (when-let [remote (:remote system)]
-    (apply client/set-remote remote))
   (when-let [level (:log-level system)]
     (timbre/set-level! level))
+  (when-let [remote (:remote system)]
+    (apply client/set-remote remote))
   (if-let [server (:server system)]
     (do
       (.start server)
@@ -58,7 +59,7 @@
       (println (str "Ayler " ayler.version/version))
       (System/exit 0))
     (-> system
-        (#(if level (assoc % :log-level level) %))
+        (#(if level (assoc % :log-level (keyword level)) %))
         (#(if P (assoc % :remote [P H]) %))
         (#(if port (assoc-in % [:settings :port] port) %))
         start)))
