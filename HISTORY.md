@@ -4,6 +4,8 @@
 Features:
 
 * Only show an error once.
+* Improved "unknown error".
+* Fixed default log level to be *info*.
 
 ### 0.4.0
 Features:
