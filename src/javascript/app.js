@@ -98,6 +98,7 @@ aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
       var message =
         "An unknown error has occured: empty response from the server." +
         "This may be caused by nrepl connection issues. " +
+        "Please try again (or refresh the browser). " +
         "If it happens again you may need to restart Ayler.";
       State.appendError(data || message);
       break;
