@@ -12,7 +12,7 @@
                  [com.taoensso/timbre "2.1.2"]
                  [org.clojure/tools.cli "0.2.2"]
                  [ring/ring-json "0.2.0"]
-                 [ring-anti-forgery "0.3.0-SNAPSHOT"]]
+                 [ring-anti-forgery "0.3.0"]]
 
   :source-paths ["src/clojure"]
   :test-paths ["test/clojure"]

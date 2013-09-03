@@ -21,6 +21,5 @@
 
 (def app
   (-> app-routes
-      (wrap-anti-forgery {:access-denied-response access-denied-response
-                          :request-token-extractor token-header-extractor})
+      (wrap-anti-forgery {:error-response access-denied-response})
       handler/site))
