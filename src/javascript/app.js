@@ -158,10 +158,10 @@ aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
   };
 
   var defaultErrorHandler = function(data, status, headers, config) {
-    ApiClient.handleError(data, status);
+    apiClient.handleError(data, status);
   }
 
-  // Wrapper for $http.get.
+  // Wrapper for $http.post.
   //
   // params:
   // * url: The url to post to.
