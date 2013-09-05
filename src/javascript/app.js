@@ -235,8 +235,13 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
       function(data) {
         $("#allNsModal").modal("hide");
         $location.path("/" + selected);
+        $scope.$broadcast("reload-nses")
       });
   };
+
+  $scope.$on("reload-nses", function($event) {
+    $scope.reloadNses($event);
+  });
 });
 
 // Configure the state for listing namespaces.
