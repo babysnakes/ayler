@@ -15,7 +15,7 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" ng-click="loadAllNses($event)" id="show-all-ns-modal">
+              <a  href="#" ng-click="loadSearchNses($event)" id="show-search-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
@@ -110,7 +110,7 @@
         </div>
       </form>
     </div>
-    <div id="allNsModal" class="modal hide fade">
+    <div id="searchNsModal" class="modal hide fade">
       <div class="modal-header">
         <h3>All namespaces in classpath</h3>
       </div>
@@ -130,10 +130,10 @@
             a <em>FileNotFoundException</em> error.
           </div>
           <div errors></div>
-          <input type="text" class="input-medium" name="allNsFilter"
-                 placeholder="Filter namespaces" ng-model="allNsFilter"/>
+          <input type="text" class="input-medium" name="searchNsFilter"
+                 placeholder="Filter namespaces" ng-model="searchNsFilter"/>
           <select class="input-xxlarge" size="8" ng-model="state.selectedNs"
-                  ng-options="ns for ns in state.allNses | filter:allNsFilter">
+                  ng-options="ns for ns in state.allNses | filter:searchNsFilter">
           </select>
         </div>
         <div class="modal-footer">

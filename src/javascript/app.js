@@ -23,7 +23,7 @@ aylerApp.config(function($routeProvider) {
            controller: "VarViewCtrl"});
 });
 
-// This will hold all the
+// This will hold all the state in the application.
 aylerApp.factory("State", function() {
   var state = {
     nsList: [],
@@ -195,10 +195,10 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
     $("#connectForm").modal("show");
   });
 
-  $scope.loadAllNses = function($event) {
+  $scope.loadSearchNses = function($event) {
     $event.preventDefault();
     ApiClient.httpGet("/api/lsall", "allNsBusy", State.setAllNses);
-    $("#allNsModal").modal("show");
+    $("#searchNsModal").modal("show");
   };
 
   $scope.connect = function() {
@@ -233,7 +233,7 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
     ApiClient.httpPost(
       url, {},
       function(data) {
-        $("#allNsModal").modal("hide");
+        $("#searchNsModal").modal("hide");
         $location.path("/" + selected);
         $scope.$broadcast("reload-nses")
       });

@@ -110,16 +110,16 @@ describe("Error reporting and dismissal", function() {
   });
 });
 
-describe("all namespaces usage scenario", function() {
+describe("search namespaces usage scenario", function() {
   beforeEach(function() {
     browser().navigateTo("/");
   });
 
   it("default usage", function() {
-    element("#show-all-ns-modal", "search button").click();
+    element("#show-search-ns-modal", "search button").click();
     sleep(0.6);
     select("state.selectedNs").option("clojure.zip")
-    element("#allNsModal input[type=submit]").click();
+    element("#searchNsModal input[type=submit]").click();
     sleep(1);
     expect(browser().location().path()).toBe("/clojure.zip");
   });
