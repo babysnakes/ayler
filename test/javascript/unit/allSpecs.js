@@ -233,11 +233,6 @@ describe("state manipulation: ", function() {
       constructTestController([], "clojure.java.io");
       expect(apiClient.httpGet.calls[0].args[0]) .toEqual("/api/ls");
     });
-
-    it("unescapes the route's namespace", function() {
-      constructTestController(["one"], "clojure.some%3Cns");
-      expect(scope.namespace).toEqual("clojure.some<ns");
-    });
   });
 
   describe("VarViewCtrl", function() {
@@ -262,12 +257,6 @@ describe("state manipulation: ", function() {
       constructTestController(["ns"], ["var"], "namespace", "var");
       expect(state.displaySource).toBeTruthy();
       expect(state.displayDoc).toBeTruthy();
-    });
-
-    it("populates the namespace and var unescaped", function() {
-      constructTestController(["ns"], ["var"], "namespace%2A", "var%2A");
-      expect(scope.namespace).toEqual("namespace*");
-      expect(scope.var).toEqual("var*");
     });
 
     it("does not refresh the nsList and varList if they have value", function() {

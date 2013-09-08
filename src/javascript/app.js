@@ -265,17 +265,17 @@ aylerApp.controller("NsViewCtrl", function($scope, State, $routeParams, ApiClien
   State.displaySource = false;
   State.displayDoc = true;
   State.vrs = ""; // clean var filtering on navigation
-  $scope.namespace = unescape($routeParams.namespace);
-  State.symbolName = $scope.namespace;
-  State.setTitle($scope.namespace);
+  $scope.namespace = $routeParams.namespace;
+  State.symbolName = unescape($scope.namespace);
+  State.setTitle(State.symbolName);
 
   if (_.isEmpty(State.nsList)) {
     // only update nsList if it's empty (e.g. landed directly on page)
     ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
   }
-  ApiClient.httpGet("/api/ls/" + escape($scope.namespace),
+  ApiClient.httpGet("/api/ls/" + $scope.namespace,
                     "varListBusy", State.setVarList($scope.namespace));
-  ApiClient.httpGet("/api/doc/" + escape($scope.namespace),
+  ApiClient.httpGet("/api/doc/" + $scope.namespace,
                     "docBusy", State.setDoc);
 
 });
@@ -285,9 +285,9 @@ aylerApp.controller("VarViewCtrl", function($scope, State, $routeParams, ApiClie
   $scope.state = State;
   State.displayDoc = true;
   State.displaySource = true;
-  $scope.namespace = unescape($routeParams.namespace);
-  $scope.var = unescape($routeParams.var);
-  State.symbolName = $scope.namespace + " / " + $scope.var;
+  $scope.namespace = $routeParams.namespace;
+  $scope.var = $routeParams.var;
+  State.symbolName = unescape($scope.namespace + " / " + $scope.var);
   State.setTitle(State.symbolName);
 
   if (_.isEmpty(State.nsList)) {
@@ -295,13 +295,13 @@ aylerApp.controller("VarViewCtrl", function($scope, State, $routeParams, ApiClie
   };
 
   if (_.isEmpty(State.varList)) {
-    ApiClient.httpGet("/api/ls/" + escape($scope.namespace),
+    ApiClient.httpGet("/api/ls/" + $scope.namespace,
                       "varListBusy", State.setVarList($scope.namespace));
   };
 
-  ApiClient.httpGet("/api/doc/" + escape($scope.namespace + "/" + $scope.var),
+  ApiClient.httpGet("/api/doc/" + $scope.namespace + "/" + $scope.var,
                     "docBusy", State.setDoc);
 
-  ApiClient.httpGet("/api/source/" + escape($scope.namespace + "/" + $scope.var),
+  ApiClient.httpGet("/api/source/" + $scope.namespace + "/" + $scope.var,
                     "sourceBusy", State.setSource);
 });
