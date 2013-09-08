@@ -228,13 +228,13 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
     ApiClient.httpGet("/api/ls", "nsListBusy", State.setAttribute("nsList", []));
   };
 
-  $scope.selectNsToRequire = function() {
+  $scope.selectNsToLoad = function() {
     var selected = escape($scope.state.selectedNs);
     if (_.isEmpty(selected) || selected === "undefined") {
       alert("Please select a namespace or press 'Cencel'");
       return;
     }
-    var url = "/api/require/" + selected;
+    var url = "/api/load/" + selected;
     ApiClient.httpPost(
       url, {},
       function(data) {
