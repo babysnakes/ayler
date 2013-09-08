@@ -109,10 +109,25 @@ describe("Regular workflow", function() {
     it("default usage", function() {
       element("#show-search-ns-modal", "search button").click();
       sleep(0.6);
+      input("showAllNses").check(); // make sure clojure.zip shows!
       select("state.selectedNs").option("clojure.zip")
       element("#searchNsModal input[type=submit]").click();
       sleep(1);
       expect(browser().location().path()).toBe("/clojure.zip");
+    });
+
+    it("toggles display of already required namespaces", function() {
+      // We're testing 'clojure.core' as it's never not-loaded.
+      // Not sure exactly how element(...).html works but it seems to
+      // work correctly.
+      element("#show-search-ns-modal", "search button").click();
+      sleep(0.6);
+      input("searchNsFilter").enter("clojure.core");
+      input("showAllNses").check(); // make sure clojure.core shows!
+      select("state.selectedNs").option("clojure.core")
+      expect(element("#searchNsModal option").html()).toEqual("clojure.core");
+      input("showAllNses").check(); // make sure clojure.core is hidden!
+      expect(element("#searchNsModal option").html()).toEqual("");
     });
   });
 });

@@ -60,11 +60,6 @@ aylerApp.factory("State", function() {
     }
   };
 
-  state.setAllNses = function(nses) {
-    state.allNses = nses || [];
-    state.selectedNs = _.first(state.allNses);
-  };
-
   state.appendError = function(error) {
     state.errors.push(error);
     state.errors = _.uniq(state.errors);
@@ -173,6 +168,17 @@ aylerApp.filter("escape", function() {
   return function(input) {return escape(input)};
 });
 
+aylerApp.filter('removeElements', function() {
+  return function(input, elements, showAll) {
+    if (showAll) {
+      return input
+    } else {
+      return _.difference(input, elements);
+    };
+  };
+})
+
+
 aylerApp.directive("errors", function() {
   return {templateUrl: "templates/errors.html"};
 });
@@ -192,7 +198,7 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
 
   $scope.loadSearchNses = function($event) {
     $event.preventDefault();
-    ApiClient.httpGet("/api/lsall", "allNsBusy", State.setAllNses);
+    ApiClient.httpGet("/api/lsall", "allNsBusy", State.setAttribute("allNses", []));
     $("#searchNsModal").modal("show");
   };
 
@@ -224,6 +230,10 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
 
   $scope.selectNsToRequire = function() {
     var selected = escape($scope.state.selectedNs);
+    if (_.isEmpty(selected) || selected === "undefined") {
+      alert("Please select a namespace or press 'Cencel'");
+      return;
+    }
     var url = "/api/require/" + selected;
     ApiClient.httpPost(
       url, {},
