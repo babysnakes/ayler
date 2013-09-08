@@ -60,14 +60,14 @@
       <div class="container span6 list-window nses-window">
         <ul>
           <li ng-repeat="ns in state.nsList | filter:nses">
-            <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
+            <a ng-href="#/{{ns | escape}}">{{ns}}</a>
           </li>
         </ul>
       </div>
       <div class="container span6 list-window vrs-window">
         <ul>
           <li ng-repeat="var in state.varList | filter:state.vrs">
-            <a ng-href="#/{{var.url}}">{{var.name}}</a>
+            <a ng-href="#/{{state.escapedNamespace}}/{{var | escape}}">{{var}}</a>
           </li>
         </ul>
       </div>

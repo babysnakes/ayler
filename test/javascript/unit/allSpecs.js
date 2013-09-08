@@ -17,40 +17,6 @@ describe("State service", function() {
     }));
   });
 
-  describe("#setNsList", function() {
-    it("converts each namespace to name and url", inject(function(State) {
-      State.setNsList(["me<"]);
-      expect(State.nsList).toContain({name: "me<", url: "me%3C"});
-    }));
-
-    describe("#setDoc", function() {
-      it("populates the doc", inject(function(State) {
-        State.setDoc("some doc");
-        expect(State.doc).toEqual("some doc");
-      }));
-
-      it("indicates when no doc was found", inject(function(State) {
-        State.setDoc(null);
-        expect(State.doc).toEqual("No documentation found.");
-      }));
-    });
-  });
-
-  describe("#setVarList", function() {
-    beforeEach(inject(function(State) {
-      state = State;
-      state.setVarList("core:one")(["me<"]);
-    }));
-
-    it("sets the varList name with unescaped value", function() {
-      expect(_.first(state.varList).name).toEqual("me<");
-    });
-
-    it("adds the namespace to the url and escapes it all", function() {
-      expect(_.first(state.varList).url).toEqual("core%3Aone/me%3C");
-    });
-  });
-
   describe("#appendError", function() {
     beforeEach(inject(function(State) {
       state = State;

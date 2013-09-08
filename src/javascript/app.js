@@ -31,7 +31,8 @@ aylerApp.factory("State", function() {
     errors: [],
     allNses: [],
     doc: undefined,   // ns or var docstring
-    source: undefined // var source
+    source: undefined, // var source
+    escapedNamespace : undefined // we need it for calculating urls!
   };
 
   // Sets the page title (with constant prefix).
@@ -43,22 +44,12 @@ aylerApp.factory("State", function() {
     }
   };
 
-  state.setNsList = function(nslist) {
-    state.nsList = _.map(nslist, function(ns) {
-      return {name: ns, url: escape(ns)};
-    });
-  };
-
-  state.setVarList = function(ns) {
-    return function(varlst) {
-      state.varList = _.map(varlst, function(item) {
-        return {name: item, url: escape(ns + "/" + item)};
-      });
+  // Returns a function that sets the named attribute (on State) with
+  // the *data* argument or with the supplied defaultValue.
+  state.setAttribute = function(name, defaultValue) {
+    return function(data) {
+      state[name] = data || defaultValue;
     };
-  };
-
-  state.setDoc = function(text) {
-    state.doc = text || "No documentation found.";
   };
 
   state.setSource = function(text) {
@@ -178,6 +169,10 @@ aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
   return apiClient;
 });
 
+aylerApp.filter("escape", function() {
+  return function(input) {return escape(input)};
+});
+
 aylerApp.directive("errors", function() {
   return {templateUrl: "templates/errors.html"};
 });
@@ -224,7 +219,7 @@ aylerApp.controller("MainCtrl", function($scope, State, ApiClient, $location, $r
 
   $scope.reloadNses = function($event) {
     $event.preventDefault();
-    ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+    ApiClient.httpGet("/api/ls", "nsListBusy", State.setAttribute("nsList", []));
   };
 
   $scope.selectNsToRequire = function() {
@@ -255,7 +250,7 @@ aylerApp.controller("NsListCtrl", function($scope, State, ApiClient) {
   State.symbolName = null; // Pretty name of the queried namespace or var.
   State.setTitle();
 
-  ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+  ApiClient.httpGet("/api/ls", "nsListBusy", State.setAttribute("nsList", []));
 });
 
 // Configure the state for displaying namespace.
@@ -265,18 +260,18 @@ aylerApp.controller("NsViewCtrl", function($scope, State, $routeParams, ApiClien
   State.displaySource = false;
   State.displayDoc = true;
   State.vrs = ""; // clean var filtering on navigation
-  $scope.namespace = $routeParams.namespace;
-  State.symbolName = unescape($scope.namespace);
+  State.escapedNamespace = $routeParams.namespace;
+  State.symbolName = unescape(State.escapedNamespace);
   State.setTitle(State.symbolName);
 
   if (_.isEmpty(State.nsList)) {
     // only update nsList if it's empty (e.g. landed directly on page)
-    ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+    ApiClient.httpGet("/api/ls", "nsListBusy", State.setAttribute("nsList", []));
   }
-  ApiClient.httpGet("/api/ls/" + $scope.namespace,
-                    "varListBusy", State.setVarList($scope.namespace));
-  ApiClient.httpGet("/api/doc/" + $scope.namespace,
-                    "docBusy", State.setDoc);
+  ApiClient.httpGet("/api/ls/" + State.escapedNamespace,
+                    "varListBusy", State.setAttribute("varList", []));
+  ApiClient.httpGet("/api/doc/" + State.escapedNamespace,
+                    "docBusy", State.setAttribute("doc", "No documentation found"));
 
 });
 
@@ -285,23 +280,23 @@ aylerApp.controller("VarViewCtrl", function($scope, State, $routeParams, ApiClie
   $scope.state = State;
   State.displayDoc = true;
   State.displaySource = true;
-  $scope.namespace = $routeParams.namespace;
+  State.escapedNamespace = $routeParams.namespace;
   $scope.var = $routeParams.var;
-  State.symbolName = unescape($scope.namespace + " / " + $scope.var);
+  State.symbolName = unescape(State.escapedNamespace + " / " + $scope.var);
   State.setTitle(State.symbolName);
 
   if (_.isEmpty(State.nsList)) {
-    ApiClient.httpGet("/api/ls", "nsListBusy", State.setNsList);
+    ApiClient.httpGet("/api/ls", "nsListBusy", State.setAttribute("nsList", []));
   };
 
   if (_.isEmpty(State.varList)) {
-    ApiClient.httpGet("/api/ls/" + $scope.namespace,
-                      "varListBusy", State.setVarList($scope.namespace));
+    ApiClient.httpGet("/api/ls/" + State.escapedNamespace,
+                      "varListBusy", State.setAttribute("varList", []));
   };
 
-  ApiClient.httpGet("/api/doc/" + $scope.namespace + "/" + $scope.var,
-                    "docBusy", State.setDoc);
+  ApiClient.httpGet("/api/doc/" + State.escapedNamespace + "/" + $scope.var,
+                    "docBusy", State.setAttribute("doc", "No documentation found"));
 
-  ApiClient.httpGet("/api/source/" + $scope.namespace + "/" + $scope.var,
+  ApiClient.httpGet("/api/source/" + State.escapedNamespace + "/" + $scope.var,
                     "sourceBusy", State.setSource);
 });
