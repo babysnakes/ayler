@@ -127,9 +127,10 @@ describe("ApiClient Service", function() {
   describe("#handleResponse", function() {
     it("calls the provided handler on status: done", function() {
       var response = {status: "done", response: ["one"]};
-      var handler = function(input) { state.nsList = input; };
-      target.handleResponse(response, handler);
-      expect(state.nsList).toEqual(["one"]);
+      this.handler = function(result) {};
+      spyOn(this, "handler");
+      target.handleResponse(response, this.handler);
+      expect(this.handler).toHaveBeenCalledWith(["one"]);
     });
 
     it("adds the response to the error list if status is error", function() {
@@ -139,7 +140,7 @@ describe("ApiClient Service", function() {
       expect(state.errors).toContain("ERROR");
     });
 
-    // TODO: Test the default alert
+    xit("alerts the error if no other status is matched"); // TODO
   });
 });
 
@@ -225,13 +226,18 @@ describe("state manipulation: ", function() {
 
     it("does not reload the nsList is it's not empty", function() {
       constructTestController(["one", "two"], "clojure.java.io");
-      expect(apiClient.httpGet.calls[0].args[0])
-        .toEqual("/api/ls/clojure.java.io");
+      var urls = _.map(apiClient.httpGet.calls, function(call) {
+        return call.args[0];
+      });
+      expect(urls).not.toContain("/api/ls");
     });
 
     it("populates the nsList if it's empty", function() {
       constructTestController([], "clojure.java.io");
-      expect(apiClient.httpGet.calls[0].args[0]) .toEqual("/api/ls");
+      var urls = _.map(apiClient.httpGet.calls, function(call) {
+        return call.args[0];
+      });
+      expect(urls).toContain("/api/ls");
     });
   });
 
