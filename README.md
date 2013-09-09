@@ -22,8 +22,10 @@ see the [wiki][gwiki].
 This project relies on external applications to manage different parts
 of it's life cycle. You'll need the following applications:
 
-* [Nodejs][node] (currently 0.10.7)
+* [Nodejs][node] (currently 0.10.x)
 * [phantomjs][pjs] (currently 1.9.x)
+* [Leiningen][] - use version 2.3.2 (the output uberjar path differ from
+  2.2.x).
 
 Once you have these installed run the following:
 
@@ -107,3 +109,4 @@ Distributed under the GPLv3 license.
 [clojuredocs]: http://www.clojuredocs.org
 [gwiki]: https://github.com/babysnakes/ayler/wiki
 [lein-outdated]: https://github.com/ato/lein-outdated
+[leiningen]: http://leiningen.org
