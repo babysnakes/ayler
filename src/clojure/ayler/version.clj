@@ -1,3 +1,3 @@
 (ns ayler.version)
 
-(def version "0.4.2-SNAPSHOT")
+(def version "0.4.2")
