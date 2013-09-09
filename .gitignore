@@ -16,3 +16,4 @@ pom.xml
 /vendor/
 /resources/
 /.emacs.desktop*
+.nrepl-port
