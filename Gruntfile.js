@@ -99,6 +99,10 @@ module.exports = function(grunt) {
       unit: {
         configFile: "config/karma.conf.js",
         background: true
+      },
+      once: {
+        configFile: "config/karma.conf.js",
+        singleRun: true
       }
     },
 
