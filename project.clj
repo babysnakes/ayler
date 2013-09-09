@@ -21,7 +21,8 @@
                    :dependencies [[ring-mock "0.1.5"]
                                   [org.clojure/tools.namespace "0.2.4"]
                                   [org.clojure/java.classpath "0.2.1"]]}
-             :production {:main ayler.app}}
+             :production {:main ayler.app
+                          :aot [ayler.app]}}
 
   :main ^{:skip-aot true} ayler.app ; avoid issues with tools.namespace.
 
