@@ -26,4 +26,4 @@
 
   :main ^{:skip-aot true} ayler.app ; avoid issues with tools.namespace.
 
-  :min-lein-version "2.2.0")
+  :min-lein-version "2.3.2")
