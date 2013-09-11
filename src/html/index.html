@@ -15,7 +15,7 @@
           <ul class="nav pull-right">
             <li class="divider-vertical"></li>
             <li>
-              <a  href="#" ng-click="loadAllNses($event)" id="show-all-ns-modal">
+              <a  href="#" ng-click="loadSearchNses($event)" id="show-search-ns-modal">
                 <i class="icon-search" title="Search all available namespaces"></i>
               </a>
             </li>
@@ -60,14 +60,14 @@
       <div class="container span6 list-window nses-window">
         <ul>
           <li ng-repeat="ns in state.nsList | filter:nses">
-            <a ng-href="#/{{ns.url}}">{{ns.name}}</a>
+            <a ng-href="#/{{ns | escape}}">{{ns}}</a>
           </li>
         </ul>
       </div>
       <div class="container span6 list-window vrs-window">
         <ul>
           <li ng-repeat="var in state.varList | filter:state.vrs">
-            <a ng-href="#/{{var.url}}">{{var.name}}</a>
+            <a ng-href="#/{{state.escapedNamespace}}/{{var | escape}}">{{var}}</a>
           </li>
         </ul>
       </div>
@@ -94,6 +94,7 @@
         You seem to be disconnected from the nrepl server. Please
         reconnect!
       </div>
+      <div errors></div>
       <form ng-submit="connect()">
         <div class="modal-body">
           <!-- Insert error here -->
@@ -109,16 +110,20 @@
         </div>
       </form>
     </div>
-    <div id="allNsModal" class="modal hide fade">
+    <div id="searchNsModal" class="modal hide fade">
       <div class="modal-header">
-        <h3>All namespaces in classpath</h3>
+        <h3>Search all namespaces in classpath</h3>
       </div>
-      <form ng-submit="selectNsToRequire()">
+      <form ng-submit="selectNsToLoad()">
         <div class="modal-body">
           <p>
             Select a namespace from the list below to be loaded into
             your REPL. When submitting you'll see the documentation
             for this namespace.
+          </p>
+          <p>
+            You can toggle listing of <em>loaded</em> namespaces in the
+            checkbox below.
           </p>
           <div class="alert alert-block" ng-show="state.showErrors">
             <h4>Notice!</h4>
@@ -129,10 +134,14 @@
             a <em>FileNotFoundException</em> error.
           </div>
           <div errors></div>
-          <input type="text" class="input-medium" name="allNsFilter"
-                 placeholder="Filter namespaces" ng-model="allNsFilter"/>
+          <input type="text" class="input-medium" name="searchNsFilter"
+                 placeholder="Filter namespaces" ng-model="searchNsFilter"/>
+          <label class="checkbox inline">
+            <input type="checkbox" ng-model="showAllNses">
+            Show loaded namespaces
+          </label>
           <select class="input-xxlarge" size="8" ng-model="state.selectedNs"
-                  ng-options="ns for ns in state.allNses | filter:allNsFilter">
+                  ng-options="ns for ns in state.allNses | filter:searchNsFilter | removeElements:state.nsList:showAllNses">
           </select>
         </div>
         <div class="modal-footer">

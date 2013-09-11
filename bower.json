@@ -1,0 +1,12 @@
+{
+  "name": "ayler",
+  "version": "0.4.2",
+  "dependencies": {
+    "bootstrap": "2.3.2",
+    "angular": "1.0.8",
+    "angular-mocks": "1.0.8",
+    "angular-scenario": "1.0.8",
+    "underscore": "~1.5.2",
+    "jquery": "1.10.2"
+  }
+}

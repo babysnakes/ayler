@@ -17,40 +17,6 @@ describe("State service", function() {
     }));
   });
 
-  describe("#setNsList", function() {
-    it("converts each namespace to name and url", inject(function(State) {
-      State.setNsList(["me<"]);
-      expect(State.nsList).toContain({name: "me<", url: "me%3C"});
-    }));
-
-    describe("#setDoc", function() {
-      it("populates the doc", inject(function(State) {
-        State.setDoc("some doc");
-        expect(State.doc).toEqual("some doc");
-      }));
-
-      it("indicates when no doc was found", inject(function(State) {
-        State.setDoc(null);
-        expect(State.doc).toEqual("No documentation found.");
-      }));
-    });
-  });
-
-  describe("#setVarList", function() {
-    beforeEach(inject(function(State) {
-      state = State;
-      state.setVarList("core:one")(["me<"]);
-    }));
-
-    it("sets the varList name with unescaped value", function() {
-      expect(_.first(state.varList).name).toEqual("me<");
-    });
-
-    it("adds the namespace to the url and escapes it all", function() {
-      expect(_.first(state.varList).url).toEqual("core%3Aone/me%3C");
-    });
-  });
-
   describe("#appendError", function() {
     beforeEach(inject(function(State) {
       state = State;
@@ -127,9 +93,10 @@ describe("ApiClient Service", function() {
   describe("#handleResponse", function() {
     it("calls the provided handler on status: done", function() {
       var response = {status: "done", response: ["one"]};
-      var handler = function(input) { state.nsList = input; };
-      target.handleResponse(response, handler);
-      expect(state.nsList).toEqual(["one"]);
+      this.handler = function(result) {};
+      spyOn(this, "handler");
+      target.handleResponse(response, this.handler);
+      expect(this.handler).toHaveBeenCalledWith(["one"]);
     });
 
     it("adds the response to the error list if status is error", function() {
@@ -139,7 +106,7 @@ describe("ApiClient Service", function() {
       expect(state.errors).toContain("ERROR");
     });
 
-    // TODO: Test the default alert
+    xit("alerts the error if no other status is matched"); // TODO
   });
 });
 
@@ -225,18 +192,18 @@ describe("state manipulation: ", function() {
 
     it("does not reload the nsList is it's not empty", function() {
       constructTestController(["one", "two"], "clojure.java.io");
-      expect(apiClient.httpGet.calls[0].args[0])
-        .toEqual("/api/ls/clojure.java.io");
+      var urls = _.map(apiClient.httpGet.calls, function(call) {
+        return call.args[0];
+      });
+      expect(urls).not.toContain("/api/ls");
     });
 
     it("populates the nsList if it's empty", function() {
       constructTestController([], "clojure.java.io");
-      expect(apiClient.httpGet.calls[0].args[0]) .toEqual("/api/ls");
-    });
-
-    it("unescapes the route's namespace", function() {
-      constructTestController(["one"], "clojure.some%3Cns");
-      expect(scope.namespace).toEqual("clojure.some<ns");
+      var urls = _.map(apiClient.httpGet.calls, function(call) {
+        return call.args[0];
+      });
+      expect(urls).toContain("/api/ls");
     });
   });
 
@@ -262,12 +229,6 @@ describe("state manipulation: ", function() {
       constructTestController(["ns"], ["var"], "namespace", "var");
       expect(state.displaySource).toBeTruthy();
       expect(state.displayDoc).toBeTruthy();
-    });
-
-    it("populates the namespace and var unescaped", function() {
-      constructTestController(["ns"], ["var"], "namespace%2A", "var%2A");
-      expect(scope.namespace).toEqual("namespace*");
-      expect(scope.var).toEqual("var*");
     });
 
     it("does not refresh the nsList and varList if they have value", function() {

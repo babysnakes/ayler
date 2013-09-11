@@ -85,7 +85,7 @@
                           (clojure.java.classpath/classpath))))]
     (compose-response query value-response-handler)))
 
-(defn require-namespace
+(defn load-namespace
   "require namespace on remote nrepl"
   [namespace]
   (compose-response (pr-str `(require (quote ~(symbol namespace))))

@@ -56,12 +56,12 @@
   (-> (construct-varname namespace var)
       (queries/query-source)))
 
-(defn- remote-require
+(defn- remote-load
   [namespace]
   (timbre/debug (str "require on remote nrepl: " namespace))
   (-> namespace
       url-decode
-      queries/require-namespace))
+      queries/load-namespace))
 
 (defn- set-remote
   [port host]
@@ -82,8 +82,8 @@
        (response (var-doc namespace var)))
   (GET "/api/source/:namespace/:var" [namespace var]
        (response (var-source namespace var)))
-  (POST "/api/require/:namespace" [namespace :as request]
-        (response (remote-require namespace)))
+  (POST "/api/load/:namespace" [namespace :as request]
+        (response (remote-load namespace)))
   (POST "/api/remote/" [port host :as request] (set-remote port host))
   (POST "/api/disconnect/" _ (response (client/disconnect))))
 

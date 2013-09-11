@@ -18,31 +18,14 @@ see the [wiki][gwiki].
 
 ## Development environment setup
 
-### Custom dependencies
-We're using a custom fork of [ring-anti-forgery][]. This fork
-currently only exists in github and I couldn't find an elegant way for
-including github repositories as dependencies when building production
-jar, so currently we require an extra step for installing the fork
-locally on your repository. Later it'll either get accepted as pull
-request or we'll create a custom fork.
-
-Please run the following in order to install it locally:
-
-```sh
-# cd /to/some/directory
-# git clone git://github.com/babysnakes/ring-anti-forgery.git
-# cd ring-anti-forgery
-# git checkout db6d0d9
-# lein install
-# cd .. && rm -rf ring-anti-forgery
-```
-
 ### External dependencies
 This project relies on external applications to manage different parts
 of it's life cycle. You'll need the following applications:
 
-* [Nodejs][node] (currently 0.10.7)
+* [Nodejs][node] (currently 0.10.x)
 * [phantomjs][pjs] (currently 1.9.x)
+* [Leiningen][] - use version 2.3.2 (the output uberjar path differ from
+  2.2.x).
 
 Once you have these installed run the following:
 
@@ -125,5 +108,5 @@ Distributed under the GPLv3 license.
 [grunt]: http://gruntjs.com
 [clojuredocs]: http://www.clojuredocs.org
 [gwiki]: https://github.com/babysnakes/ayler/wiki
-[ring-anti-forgery]: https://github.com/weavejester/ring-anti-forgery
 [lein-outdated]: https://github.com/ato/lein-outdated
+[leiningen]: http://leiningen.org

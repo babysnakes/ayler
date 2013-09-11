@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     distDir: "target/dist",
-    standaloneJar: "target/production+uberjar/ayler-<%= pkg.version %>-standalone.jar",
+    standaloneJar: "target/ayler-<%= pkg.version %>-standalone.jar",
     distExecutable: "<%= distDir %>/ayler-<%= pkg.version %>",
 
     less: {
@@ -99,6 +99,10 @@ module.exports = function(grunt) {
       unit: {
         configFile: "config/karma.conf.js",
         background: true
+      },
+      once: {
+        configFile: "config/karma.conf.js",
+        singleRun: true
       }
     },
 
@@ -145,8 +149,7 @@ module.exports = function(grunt) {
       },
       uberjar: {
         command: [
-          "export LEIN_SNAPSHOTS_IN_RELEASE=true",
-          "Lein with-profile production do clean, uberjar"
+          "lein with-profile production do clean, uberjar"
         ].join(" && "),
         options: {
           stdout: true,
@@ -194,7 +197,7 @@ module.exports = function(grunt) {
         }]
       },
       component: {
-        src: "config/bower.json",
+        src: "bower.json",
         overwrite: true,
         replacements: [{
           from: /("version": ").*(",\s*)/,

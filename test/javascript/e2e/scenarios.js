@@ -87,6 +87,49 @@ describe("Regular workflow", function() {
       expect(element("#docstring").text()).toMatch(/^  \w+/);
     })
   });
+
+  describe("Application navigation", function() {
+    beforeEach(function() {
+      browser().navigateTo("/");
+    });
+
+    it("from namespace to var", function() {
+      element("[href='#/clojure.main']", "clojure.main").click();
+      expect(browser().location().path()).toMatch("/clojure.main");
+      element("[href='#/clojure.main/repl']", "clojure.main/repl").click();
+      expect(browser().location().path()).toMatch("/clojure.main/repl");
+    });
+  });
+
+  describe("search namespaces usage scenario", function() {
+    beforeEach(function() {
+      browser().navigateTo("/");
+    });
+
+    it("default usage", function() {
+      element("#show-search-ns-modal", "search button").click();
+      sleep(0.6);
+      input("showAllNses").check(); // make sure clojure.zip shows!
+      select("state.selectedNs").option("clojure.zip")
+      element("#searchNsModal input[type=submit]").click();
+      sleep(1);
+      expect(browser().location().path()).toBe("/clojure.zip");
+    });
+
+    it("toggles display of already required namespaces", function() {
+      // We're testing 'clojure.core' as it's never not-loaded.
+      // Not sure exactly how element(...).html works but it seems to
+      // work correctly.
+      element("#show-search-ns-modal", "search button").click();
+      sleep(0.6);
+      input("searchNsFilter").enter("clojure.core");
+      input("showAllNses").check(); // make sure clojure.core shows!
+      select("state.selectedNs").option("clojure.core")
+      expect(element("#searchNsModal option").html()).toEqual("clojure.core");
+      input("showAllNses").check(); // make sure clojure.core is hidden!
+      expect(element("#searchNsModal option").html()).toEqual("");
+    });
+  });
 });
 
 describe("Error reporting and dismissal", function() {
@@ -107,21 +150,6 @@ describe("Error reporting and dismissal", function() {
     element(".alert-error button", "Dismiss").click();
     expect(element(".alert-error").css("display")).toBe("none");
     expect(repeater(".alert-error li", "errors").count()).toBe(0);
-  });
-});
-
-describe("all namespaces usage scenario", function() {
-  beforeEach(function() {
-    browser().navigateTo("/");
-  });
-
-  it("default usage", function() {
-    element("#show-all-ns-modal", "search button").click();
-    sleep(0.6);
-    select("state.selectedNs").option("clojure.zip")
-    element("#allNsModal input[type=submit]").click();
-    sleep(1);
-    expect(browser().location().path()).toBe("/clojure.zip");
   });
 });
 
