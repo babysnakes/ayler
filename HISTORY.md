@@ -1,5 +1,21 @@
 # Project history
 
+### 0.4.2
+Features:
+
+* It's now possible to toggle the display of already loaded namespaces
+  in the *Search all namespaces* window (by default loaded namespaces
+  are not displayed).
+* Display errors in the *Connect to remote host* modal as well as on
+  the main window.
+
+Fixes:
+
+* Fixed: Namespaces list don't refresh after selecting namespace to
+  load.
+* Updated javascript and clojure dependencies (including the new
+  `ring-anti-forgery` version (which included my suggestions).
+
 ### 0.4.1
 Features:
 

@@ -1,4 +1,4 @@
-(defproject ayler "0.4.2-SNAPSHOT"
+(defproject ayler "0.4.2"
   :description "External namespace browswer for clojure projects."
   ;; :url "http://example.com/FIXME"
   :license {:name "GPLv3"
@@ -26,4 +26,4 @@
 
   :main ^{:skip-aot true} ayler.app ; avoid issues with tools.namespace.
 
-  :min-lein-version "2.2.0")
+  :min-lein-version "2.3.2")
