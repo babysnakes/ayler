@@ -81,7 +81,7 @@
         <h3><small>Source</small></h3>
         <img src="img/ajax-loader.gif"/ ng-show="state.sourceBusy">
         <div class="highlighter">
-          <pre id="source" ng-bind-html-unsafe="state.source"></pre>
+          <pre id="source" ng-bind-html-unsafe="state.source | hljs"></pre>
         </div>
       </div>
       <div ng-view></div> <!-- Do not remove this line! -->
