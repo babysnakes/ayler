@@ -12,8 +12,7 @@
   []
   (alter-var-root #'system
     (constantly (-> (app/system)
-                    (assoc :remote [6001 "localhost"])
-                    (assoc-in [:settings :join?] false)))))
+                    (assoc :remote [6001 "localhost"])))))
 
 (defn start
   "Starts the development system"

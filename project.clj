@@ -6,13 +6,13 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/tools.nrepl "0.2.3"]
                  [ring/ring-core "1.1.8"]
-                 [ring/ring-jetty-adapter "1.1.8"]
                  [compojure "1.1.5"
                   :exclusions [org.clojure/tools.macro]]
                  [com.taoensso/timbre "2.6.1"]
                  [org.clojure/tools.cli "0.2.4"]
                  [ring/ring-json "0.2.0"]
-                 [ring-anti-forgery "0.3.0"]]
+                 [ring-anti-forgery "0.3.0"]
+                 [http-kit "2.1.13"]]
 
   :source-paths ["src/clojure"]
   :test-paths ["test/clojure"]
