@@ -1,5 +1,16 @@
 # Project history
 
+### 0.4.3
+Features:
+
+* Replaced jetty with http-kit.
+
+Fixes:
+
+* Added `(require clojure.repl)` to calls where `clojure.repl` is
+  needed. This usually happen when you connect to nrepl server in
+  production applications (like riemann).
+
 ### 0.4.2
 Features:
 
