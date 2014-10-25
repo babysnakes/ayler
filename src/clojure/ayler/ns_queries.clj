@@ -66,8 +66,9 @@
 (defn query-source
   "returns the source for the requested function (specify var as string)"
   [f]
-  (compose-response (pr-str `(clojure.repl/source-fn (symbol ~f)))
-                    value-response-handler))
+  (let [query (pr-str `(do (require 'clojure.repl)
+                           (clojure.repl/source-fn (symbol ~f))))]
+    (compose-response query value-response-handler)))
 
 (defn query-namespace-publics
   "returns the public variables of the supplied namespace"
