@@ -3,7 +3,7 @@
             ayler.version
             [ayler.webapp :refer (app)]
             [clojure.tools.cli :refer (cli)]
-            [ring.adapter.jetty :refer (run-jetty)]
+            [org.httpkit.server :refer (run-server close)]
             [taoensso.timbre :as timbre])
   (:gen-class))
 
@@ -20,7 +20,7 @@
 (defn system
   "Returns a new instance of the application."
   []
-  {:settings {:port 5000 :join? true}})
+  {:settings {:port 5000}})
 
 (defn start
   "Start all components of the application. Returns the updates system."
@@ -29,17 +29,15 @@
     (timbre/set-level! level))
   (when-let [remote (:remote system)]
     (apply client/set-remote remote))
-  (if-let [server (:server system)]
-    (do
-      (.start server)
-      system)
-    (assoc system :server (run-jetty app (:settings system)))))
+  (let [server (run-server app (:settings system))]
+    (timbre/info (str "Ayler started on port " (get-in system [:settings :port])))
+    (assoc system :stop-server-fn server)))
 
 (defn stop
   "Stops all components of the application. Returns the updated system."
   [system]
-  (when-let [server (:server system)]
-    (.stop server))
+  (if-let [stop-server-fn (:stop-server-fn system)]
+    (stop-server-fn))
   (assoc system :remote (client/extract-remote)))
 
 (defn -main

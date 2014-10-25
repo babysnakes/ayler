@@ -52,14 +52,6 @@ aylerApp.factory("State", function() {
     };
   };
 
-  state.setSource = function(text) {
-    if (text) {
-      state.source = hljs.highlight("clojure", text).value;
-    } else {
-      state.source = "<span>Source not found.</span>";
-    }
-  };
-
   state.appendError = function(error) {
     state.errors.push(error);
     state.errors = _.uniq(state.errors);
@@ -167,6 +159,17 @@ aylerApp.factory("ApiClient", function(State, $http, $rootScope) {
 aylerApp.filter("escape", function() {
   return function(input) {return escape(input)};
 });
+
+/**
+ * A filter for syntax highlight using hljs. The `lang` parameter */
+/** defaults to *clojure*.
+ */
+aylerApp.filter("hljs", function() {
+  return function(input, lang) {
+    lang = lang || "clojure"
+    return input ? hljs.highlight(lang, input).value : "";
+  };
+})
 
 aylerApp.filter('removeElements', function() {
   return function(input, elements, showAll) {
@@ -308,5 +311,5 @@ aylerApp.controller("VarViewCtrl", function($scope, State, $routeParams, ApiClie
                     "docBusy", State.setAttribute("doc", "No documentation found"));
 
   ApiClient.httpGet("/api/source/" + State.escapedNamespace + "/" + $scope.var,
-                    "sourceBusy", State.setSource);
+                    "sourceBusy", State.setAttribute("source", "Source not found"));
 });
